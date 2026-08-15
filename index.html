@@ -4734,14 +4734,38 @@ $("saveBtn").addEventListener(
 );
 
 
+
+.leader-title-badge{
+  display:inline-flex;
+  align-items:center;
+  margin-left:6px;
+  padding:2px 7px;
+  border:1px solid rgba(181,140,255,.45);
+  border-radius:999px;
+  background:rgba(139,92,246,.12);
+  color:#c9adff;
+  font-size:9px;
+  font-weight:850;
+  line-height:1.2;
+  vertical-align:middle;
+  white-space:nowrap;
+}
+@media(max-width:520px){
+  .leader-title-badge{
+    margin-left:4px;
+    font-size:8px;
+    padding:2px 6px;
+  }
+}
+
 /* ============================================
    LEADERBOARD
 ============================================ */
 
 async function renderBoard(){
 
-  $("boardList").innerHTML =
-    `<div class="loading">Loading leaderboard...</div>`;
+  const board=$("boardList");
+  board.innerHTML=`<div class="loading">Loading leaderboard...</div>`;
 
   const {data,error}=await supabaseClient
     .from("profiles")
@@ -4749,53 +4773,55 @@ async function renderBoard(){
     .order("points",{ascending:false});
 
   if(error){
-    console.error(error);
-    $("boardList").innerHTML =
-      `<div class="empty">Could not load leaderboard.</div>`;
+    console.error("LEADERBOARD:",error);
+    board.innerHTML=`<div class="empty">Could not load leaderboard.</div>`;
     return;
   }
 
   if(!data?.length){
-    $("boardList").innerHTML =
-      `<div class="empty">No students yet.</div>`;
+    board.innerHTML=`<div class="empty">No students yet.</div>`;
     return;
   }
 
-  /*
-   * The current RLS setup lets a user read their own user_cosmetics.
-   * Therefore we safely load the logged-in user's equipped title here.
-   * We don't need to expose everyone else's cosmetics.
-   */
-  let myTitleItemId=null;
+  // Load EVERY member's equipped title.
+  // This requires the authenticated SELECT policy on user_cosmetics
+  // to allow reading equipped cosmetic metadata for all members.
+  let titleRows=[];
 
-  if(currentUser){
-    try{
-      const {data:cosmeticData,error:cosmeticError}=await supabaseClient
-        .from("user_cosmetics")
-        .select("item_id")
-        .eq("user_id",currentUser.id)
-        .eq("slot","title")
-        .maybeSingle();
+  try{
+    const {data:cosmetics,error:cosmeticError}=await supabaseClient
+      .from("user_cosmetics")
+      .select("user_id,item_id,slot")
+      .eq("slot","title");
 
-      if(cosmeticError){
-        console.warn("LEADERBOARD TITLE LOAD:",cosmeticError);
-      }else{
-        myTitleItemId=cosmeticData?.item_id || null;
-      }
-    }catch(err){
-      console.warn("LEADERBOARD TITLE LOAD:",err);
+    if(cosmeticError){
+      console.error("LEADERBOARD TITLES:",cosmeticError);
+      showToast("Titles could not be loaded. Check user_cosmetics SELECT policy.");
+    }else{
+      titleRows=cosmetics||[];
     }
+  }catch(err){
+    console.error("LEADERBOARD TITLES:",err);
   }
 
-  const myTitle=SHOP_ITEMS.find(i=>i.id===myTitleItemId);
+  const titleByUser=new Map();
+
+  titleRows.forEach(row=>{
+    const item=SHOP_ITEMS.find(i=>i.id===row.item_id);
+    if(item){
+      titleByUser.set(row.user_id,item);
+    }
+  });
+
   const max=Math.max(
     1,
     ...data.map(student=>Number(student.points)||0)
   );
 
-  $("boardList").innerHTML=data.map((student,index)=>{
+  board.innerHTML=data.map((student,index)=>{
     const points=Number(student.points)||0;
     const hours=Number(student.effective_hours)||0;
+    const title=titleByUser.get(student.id);
 
     const medal=
       index===0 ? "🥇" :
@@ -4808,14 +4834,7 @@ async function renderBoard(){
       Math.min(100,points/max*100)
     );
 
-    const isMe=
-      currentUser &&
-      student.id===currentUser.id;
-
-    const titleHtml=
-      isMe && myTitle
-        ? `<span class="leader-title-badge">${escapeHtml(myTitle.name)}</span>`
-        : "";
+    const isMe=currentUser && student.id===currentUser.id;
 
     return `
       <div class="leader ${isMe?"me":""}">
@@ -4829,7 +4848,11 @@ async function renderBoard(){
           <div class="leader-name">
             ${escapeHtml(student.display_name)}
             ${isMe ? " · You" : ""}
-            ${titleHtml}
+            ${
+              title
+                ? `<span class="leader-title-badge">${escapeHtml(title.name)}</span>`
+                : ""
+            }
           </div>
 
           <div class="leader-meta">
