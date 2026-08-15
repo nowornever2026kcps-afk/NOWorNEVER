@@ -1943,7 +1943,6 @@ body::after{width:230px;height:230px;right:-90px;top:62%;background:rgba(103,232
 }
 
 
-
 .leader-title-badge{
   display:inline-flex;
   align-items:center;
@@ -1960,11 +1959,7 @@ body::after{width:230px;height:230px;right:-90px;top:62%;background:rgba(103,232
   white-space:nowrap;
 }
 @media(max-width:520px){
-  .leader-title-badge{
-    margin-left:4px;
-    font-size:8px;
-    padding:2px 6px;
-  }
+  .leader-title-badge{margin-left:4px;padding:2px 6px;font-size:8px}
 }
 
 </style>
@@ -4591,9 +4586,7 @@ $("saveBtn").addEventListener(
 ============================================ */
 
 async function renderBoard(){
-
-  $("boardList").innerHTML =
-    `<div class="loading">Loading leaderboard...</div>`;
+  $("boardList").innerHTML=`<div class="loading">Loading leaderboard...</div>`;
 
   try{
     const {data,error}=await supabaseClient
@@ -4604,122 +4597,71 @@ async function renderBoard(){
     if(error) throw error;
 
     if(!data?.length){
-      $("boardList").innerHTML =
-        `<div class="empty">No students yet.</div>`;
+      $("boardList").innerHTML=`<div class="empty">No students yet.</div>`;
       return;
     }
 
-    /*
-     * TITLE-ONLY QUERY
-     * This is deliberately isolated from startup/authentication.
-     * If RLS blocks other members' titles, the leaderboard itself
-     * still loads normally.
-     */
-    let titleRows=[];
+    // Title lookup is isolated from startup. If RLS blocks it,
+    // the leaderboard still renders normally.
+    const titleByUser=new Map();
 
     try{
-      const {data:titles,error:titleError}=await supabaseClient
+      const {data:rows,error:titleError}=await supabaseClient
         .from("user_cosmetics")
         .select("user_id,item_id")
         .eq("slot","title");
 
-      if(!titleError && Array.isArray(titles)){
-        titleRows=titles;
-      }else if(titleError){
-        console.warn("Leaderboard title query:",titleError);
+      if(titleError){
+        console.warn("Leaderboard title lookup:",titleError);
+      }else{
+        (rows||[]).forEach(row=>{
+          const item=SHOP_ITEMS.find(x=>x.id===row.item_id);
+          if(item) titleByUser.set(row.user_id,item.name);
+        });
       }
-    }catch(titleErr){
-      console.warn("Leaderboard title query failed:",titleErr);
+    }catch(e){
+      console.warn("Leaderboard title lookup failed:",e);
     }
 
-    const titleByUser=new Map();
-
-    titleRows.forEach(row=>{
-      const item=SHOP_ITEMS.find(item=>item.id===row.item_id);
-      if(item){
-        titleByUser.set(row.user_id,item.name);
-      }
-    });
-
-    const max=Math.max(
-      1,
-      ...data.map(student=>Number(student.points)||0)
-    );
+    const max=Math.max(1,...data.map(x=>Number(x.points)||0));
 
     $("boardList").innerHTML=data.map((student,index)=>{
-
       const points=Number(student.points)||0;
       const hours=Number(student.effective_hours)||0;
       const title=titleByUser.get(student.id);
+      const isMe=currentUser && student.id===currentUser.id;
 
-      const medal=
-        index===0 ? "🥇" :
-        index===1 ? "🥈" :
-        index===2 ? "🥉" :
-        String(index+1);
-
-      const width=Math.max(
-        0,
-        Math.min(100,(points/max)*100)
-      );
-
-      const isMe=
-        currentUser &&
-        student.id===currentUser.id;
+      const medal=index===0?"🥇":index===1?"🥈":index===2?"🥉":String(index+1);
+      const width=Math.max(0,Math.min(100,(points/max)*100));
 
       return `
         <div class="leader ${isMe?"me":""}">
           <div class="rank">${medal}</div>
-
-          <div class="avatar">
-            ${escapeHtml(initials(student.display_name))}
-          </div>
-
+          <div class="avatar">${escapeHtml(initials(student.display_name))}</div>
           <div class="leader-main">
             <div class="leader-name">
               ${escapeHtml(student.display_name)}
-              ${isMe ? " · You" : ""}
-              ${
-                title
-                  ? `<span class="leader-title-badge">${escapeHtml(title)}</span>`
-                  : ""
-              }
+              ${isMe?" · You":""}
+              ${title?`<span class="leader-title-badge">${escapeHtml(title)}</span>`:""}
             </div>
-
             <div class="leader-meta">
               ${hours.toFixed(1)}h
-              ${student.username
-                ? ` · @${escapeHtml(student.username)}`
-                : ""}
+              ${student.username?` · @${escapeHtml(student.username)}`:""}
             </div>
-
-            <div class="progress">
-              <span style="width:${width}%"></span>
-            </div>
+            <div class="progress"><span style="width:${width}%"></span></div>
           </div>
-
           <div class="points">${points.toFixed(0)}</div>
         </div>
       `;
     }).join("");
 
-    const totalPoints=data.reduce(
-      (sum,student)=>sum+(Number(student.points)||0),
-      0
-    );
-
-    const totalHours=data.reduce(
-      (sum,student)=>sum+(Number(student.effective_hours)||0),
-      0
-    );
-
+    const totalPoints=data.reduce((s,x)=>s+(Number(x.points)||0),0);
+    const totalHours=data.reduce((s,x)=>s+(Number(x.effective_hours)||0),0);
     await renderGroupStats(data,totalPoints,totalHours);
 
   }catch(err){
     console.error("LEADERBOARD:",err);
-
-    $("boardList").innerHTML =
-      `<div class="empty">Could not load leaderboard.</div>`;
+    $("boardList").innerHTML=`<div class="empty">Could not load leaderboard.</div>`;
   }
 }
 
