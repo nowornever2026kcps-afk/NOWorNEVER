@@ -847,6 +847,378 @@ input::placeholder{
   .nav button{font-size:9.5px;padding:8px 2px}
 }
 
+
+/* =========================================================
+   NOW OR NEVER — COMPLETE ANIMATION SYSTEM
+   Subtle, fast, study-friendly motion.
+   ========================================================= */
+
+:root{
+  --motion-fast:.16s;
+  --motion-med:.28s;
+  --motion-slow:.5s;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+}
+
+/* Page + view entrance */
+.app{
+  animation:appEnter .55s var(--ease-out) both;
+}
+.auth-box{
+  animation:authEnter .55s var(--ease-out) both;
+}
+@keyframes appEnter{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:none}
+}
+@keyframes authEnter{
+  from{opacity:0;transform:translateY(14px) scale(.985)}
+  to{opacity:1;transform:none}
+}
+
+/* Better tab transitions */
+.view{
+  animation:viewIn .3s var(--ease-out) both;
+}
+@keyframes viewIn{
+  from{opacity:0;transform:translateY(7px)}
+  to{opacity:1;transform:none}
+}
+
+/* Cards gently reveal */
+.card{
+  transition:
+    transform var(--motion-med) var(--ease-out),
+    border-color var(--motion-med) ease,
+    box-shadow var(--motion-med) ease;
+}
+.card.motion-visible{
+  animation:cardIn .4s var(--ease-out) both;
+}
+@keyframes cardIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:none}
+}
+
+/* Hover only where it helps */
+.card:hover{
+  border-color:#343434;
+}
+.nav button{
+  position:relative;
+  overflow:hidden;
+  transition:
+    background var(--motion-fast) ease,
+    color var(--motion-fast) ease,
+    transform var(--motion-fast) var(--ease-out);
+}
+.nav button:hover{
+  transform:translateY(-1px);
+}
+.nav button.active{
+  animation:navActive .24s var(--ease-spring);
+}
+@keyframes navActive{
+  0%{transform:scale(.96)}
+  70%{transform:scale(1.025)}
+  100%{transform:scale(1)}
+}
+
+/* Logo */
+.logo{
+  transition:
+    transform .35s var(--ease-spring),
+    border-color .2s ease,
+    box-shadow .2s ease;
+}
+.logo:hover{
+  transform:rotate(-3deg) scale(1.06);
+  border-color:#444;
+  box-shadow:0 8px 24px #0007;
+}
+.site-logo{
+  transition:transform .35s var(--ease-spring);
+}
+.logo:hover .site-logo{
+  transform:scale(1.06);
+}
+
+/* Buttons */
+button{
+  -webkit-tap-highlight-color:transparent;
+}
+.primary,.secondary,.logout,.photo-btn,.task-add button,.test-type button,.test-delete{
+  position:relative;
+  overflow:hidden;
+  transition:
+    transform var(--motion-fast) var(--ease-out),
+    filter var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    background var(--motion-fast) ease;
+}
+.primary:hover,.secondary:hover,.logout:hover,.photo-btn:hover,.task-add button:hover{
+  transform:translateY(-1px);
+}
+.primary:active,.secondary:active,.logout:active,.photo-btn:active,.task-add button:active{
+  transform:scale(.975);
+}
+
+/* Click ripple */
+.motion-ripple{
+  position:absolute;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:currentColor;
+  opacity:.18;
+  pointer-events:none;
+  transform:translate(-50%,-50%) scale(0);
+  animation:ripple .5s ease-out forwards;
+}
+@keyframes ripple{
+  to{transform:translate(-50%,-50%) scale(18);opacity:0}
+}
+
+/* Inputs */
+input,select{
+  transition:
+    border-color .2s ease,
+    background .2s ease,
+    box-shadow .2s ease,
+    transform .2s var(--ease-out);
+}
+input:focus,select:focus{
+  box-shadow:0 0 0 3px rgba(255,255,255,.045);
+  transform:translateY(-1px);
+}
+
+/* Loading shimmer */
+.loading{
+  position:relative;
+  overflow:hidden;
+  border-radius:8px;
+}
+.loading::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.055),
+    transparent
+  );
+  transform:translateX(-100%);
+  animation:shimmer 1.25s ease-in-out infinite;
+}
+@keyframes shimmer{
+  100%{transform:translateX(100%)}
+}
+
+/* Toast */
+.toast.show{
+  animation:toastIn .28s var(--ease-spring);
+}
+@keyframes toastIn{
+  0%{opacity:0;transform:translate(-50%,18px) scale(.94)}
+  70%{transform:translate(-50%,-2px) scale(1.02)}
+  100%{opacity:1;transform:translate(-50%,0) scale(1)}
+}
+
+/* Task rows */
+.task-row{
+  transition:
+    background .18s ease,
+    transform .2s var(--ease-out),
+    opacity .2s ease;
+}
+.task-row:hover{
+  background:#151515;
+  transform:translateX(2px);
+}
+.task-check{
+  transition:transform .2s var(--ease-spring);
+}
+.task-check:checked{
+  animation:checkPop .28s var(--ease-spring);
+}
+@keyframes checkPop{
+  0%{transform:scale(.75)}
+  70%{transform:scale(1.18)}
+  100%{transform:scale(1)}
+}
+.task-label.done{
+  animation:taskDone .22s ease both;
+}
+@keyframes taskDone{
+  from{opacity:.55;transform:translateX(-2px)}
+  to{opacity:1;transform:none}
+}
+
+/* Task/person cards reveal */
+.task-person{
+  animation:cardIn .35s var(--ease-out) both;
+}
+.task-person:nth-child(2){animation-delay:.035s}
+.task-person:nth-child(3){animation-delay:.07s}
+.task-person:nth-child(4){animation-delay:.105s}
+.task-person:nth-child(5){animation-delay:.14s}
+
+/* Leaderboard reveal */
+.leader{
+  transition:
+    background .2s ease,
+    transform .22s var(--ease-out),
+    border-color .2s ease;
+  animation:leaderIn .36s var(--ease-out) both;
+}
+.leader:nth-child(2){animation-delay:.035s}
+.leader:nth-child(3){animation-delay:.07s}
+.leader:nth-child(4){animation-delay:.105s}
+.leader:nth-child(5){animation-delay:.14s}
+.leader:nth-child(6){animation-delay:.175s}
+.leader:nth-child(7){animation-delay:.21s}
+.leader:hover{
+  transform:translateX(3px);
+}
+@keyframes leaderIn{
+  from{opacity:0;transform:translateX(-7px)}
+  to{opacity:1;transform:none}
+}
+
+/* Leaderboard progress bars */
+.progress span{
+  transform-origin:left center;
+  animation:barGrow .7s var(--ease-out) both;
+}
+@keyframes barGrow{
+  from{transform:scaleX(0)}
+  to{transform:scaleX(1)}
+}
+
+/* Profile/stats pop */
+.metric,.stat,.personal-stat,.streak-box,.stat-box{
+  transition:
+    transform .22s var(--ease-out),
+    border-color .2s ease,
+    background .2s ease;
+}
+.metric:hover,.stat:hover,.personal-stat:hover,.streak-box:hover,.stat-box:hover{
+  transform:translateY(-2px);
+  border-color:#383838;
+}
+
+/* Numbers that update */
+.number-pop{
+  animation:numberPop .38s var(--ease-spring);
+}
+@keyframes numberPop{
+  0%{transform:scale(.9);opacity:.65}
+  70%{transform:scale(1.08)}
+  100%{transform:scale(1);opacity:1}
+}
+
+/* Score result */
+.result.show{
+  animation:resultIn .42s var(--ease-out) both;
+}
+@keyframes resultIn{
+  from{opacity:0;transform:translateY(8px) scale(.985)}
+  to{opacity:1;transform:none}
+}
+.score.pos,.score.neg{
+  animation:scorePop .45s var(--ease-spring);
+}
+@keyframes scorePop{
+  0%{transform:scale(.82);opacity:.3}
+  70%{transform:scale(1.06)}
+  100%{transform:scale(1);opacity:1}
+}
+
+/* Weekly chart */
+.chart-bar{
+  transform-origin:bottom center;
+  animation:chartGrow .65s var(--ease-out) both;
+}
+.chart-day:nth-child(2) .chart-bar{animation-delay:.04s}
+.chart-day:nth-child(3) .chart-bar{animation-delay:.08s}
+.chart-day:nth-child(4) .chart-bar{animation-delay:.12s}
+.chart-day:nth-child(5) .chart-bar{animation-delay:.16s}
+.chart-day:nth-child(6) .chart-bar{animation-delay:.20s}
+.chart-day:nth-child(7) .chart-bar{animation-delay:.24s}
+@keyframes chartGrow{
+  from{transform:scaleY(0);opacity:.35}
+  to{transform:scaleY(1);opacity:1}
+}
+
+/* Test cards */
+.test-list-row{
+  animation:rowIn .32s var(--ease-out) both;
+  transition:transform .2s var(--ease-out),background .2s ease;
+}
+.test-list-row:hover{
+  transform:translateX(3px);
+  background:#131313;
+}
+@keyframes rowIn{
+  from{opacity:0;transform:translateY(5px)}
+  to{opacity:1;transform:none}
+}
+.test-dot{
+  transition:transform .25s var(--ease-spring);
+}
+.test-list-row:hover .test-dot{
+  transform:rotate(-4deg) scale(1.06);
+}
+
+/* Achievements */
+.achievement{
+  transition:
+    transform .22s var(--ease-out),
+    background .2s ease;
+}
+.achievement:hover{
+  transform:translateX(3px);
+}
+.achievement.unlocked .achievement-icon{
+  animation:achievementGlow .55s var(--ease-spring);
+}
+@keyframes achievementGlow{
+  0%{transform:scale(.78) rotate(-8deg);box-shadow:0 0 0 0 rgba(255,255,255,0)}
+  60%{transform:scale(1.12) rotate(3deg);box-shadow:0 0 0 7px rgba(255,255,255,.04)}
+  100%{transform:scale(1) rotate(0);box-shadow:none}
+}
+
+/* Streak */
+.streak-fire{
+  display:inline-block;
+  animation:fireFloat 1.8s ease-in-out infinite;
+  transform-origin:center bottom;
+}
+@keyframes fireFloat{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-2px) scale(1.06)}
+}
+
+/* Logout */
+.logout:hover{
+  color:var(--text);
+  border-color:#444;
+}
+
+/* Respect reduced-motion accessibility */
+@media (prefers-reduced-motion:reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.001ms!important;
+    scroll-behavior:auto!important;
+  }
+}
+
 </style>
 </head>
 
@@ -3712,6 +4084,188 @@ $("todayText").textContent =
 
     showAuthScreen();
 
+  }
+
+})();
+
+
+
+/* =========================================================
+   NOW OR NEVER — MOTION CONTROLLER
+   Adds animation without changing application logic.
+   ========================================================= */
+
+(function initMotionSystem(){
+
+  function addRipple(button,event){
+    if(!button || button.disabled) return;
+
+    const rect=button.getBoundingClientRect();
+    const ripple=document.createElement("span");
+
+    ripple.className="motion-ripple";
+
+    ripple.style.left=(event.clientX-rect.left)+"px";
+    ripple.style.top=(event.clientY-rect.top)+"px";
+
+    button.appendChild(ripple);
+
+    setTimeout(()=>ripple.remove(),520);
+  }
+
+  document.addEventListener("pointerdown",event=>{
+    const button=event.target.closest("button");
+    if(button) addRipple(button,event);
+  });
+
+  function revealCards(root=document){
+    const cards=root.querySelectorAll(
+      ".card:not(.motion-visible)"
+    );
+
+    cards.forEach((card,index)=>{
+      card.style.animationDelay=
+        Math.min(index*35,210)+"ms";
+      card.classList.add("motion-visible");
+    });
+  }
+
+  function popUpdatedNumbers(root=document){
+    const selectors=[
+      "#personalTotalPoints",
+      "#personalTotalHours",
+      "#personalAvgDay",
+      "#personalAvgWeek",
+      "#personalStreak",
+      "#achievementCount",
+      "#achievementPoints",
+      "#myProfilePoints"
+    ];
+
+    selectors.forEach(selector=>{
+      root.querySelectorAll(selector).forEach(el=>{
+        el.classList.remove("number-pop");
+        void el.offsetWidth;
+        el.classList.add("number-pop");
+      });
+    });
+  }
+
+  function markCompletedTasks(root=document){
+    root.querySelectorAll(".task-row").forEach(row=>{
+      const checkbox=row.querySelector(".task-check");
+      if(checkbox && checkbox.checked){
+        row.classList.add("task-completed");
+      }else{
+        row.classList.remove("task-completed");
+      }
+    });
+  }
+
+  function animateBoard(root=document){
+    root.querySelectorAll(".leader").forEach((row,index)=>{
+      row.style.animationDelay=
+        Math.min(index*35,280)+"ms";
+    });
+
+    root.querySelectorAll(".progress span").forEach(bar=>{
+      bar.style.transformOrigin="left center";
+    });
+  }
+
+  function animateTests(root=document){
+    root.querySelectorAll(".test-list-row").forEach((row,index)=>{
+      row.style.animationDelay=
+        Math.min(index*35,210)+"ms";
+    });
+  }
+
+  function animateView(view){
+    if(!view) return;
+
+    view.classList.remove("motion-view-refresh");
+    void view.offsetWidth;
+    view.classList.add("motion-view-refresh");
+
+    revealCards(view);
+    popUpdatedNumbers(view);
+    markCompletedTasks(view);
+    animateBoard(view);
+    animateTests(view);
+  }
+
+  document.querySelectorAll(".nav button").forEach(button=>{
+    button.addEventListener("click",()=>{
+      setTimeout(()=>{
+        const id=button.dataset.view;
+        animateView(document.getElementById(id));
+      },20);
+    });
+  });
+
+  const observer=new MutationObserver(mutations=>{
+    let shouldAnimate=false;
+
+    for(const mutation of mutations){
+      if(
+        mutation.type==="childList" &&
+        mutation.addedNodes.length
+      ){
+        shouldAnimate=true;
+        break;
+      }
+    }
+
+    if(!shouldAnimate) return;
+
+    requestAnimationFrame(()=>{
+      revealCards();
+      markCompletedTasks();
+      animateBoard();
+      animateTests();
+    });
+  });
+
+  observer.observe(document.body,{
+    childList:true,
+    subtree:true
+  });
+
+  document.addEventListener("change",event=>{
+    const checkbox=event.target.closest(".task-check");
+
+    if(!checkbox) return;
+
+    const row=checkbox.closest(".task-row");
+
+    if(!row) return;
+
+    if(checkbox.checked){
+      row.classList.add("task-completed");
+    }else{
+      row.classList.remove("task-completed");
+    }
+  });
+
+  window.NowOrNeverMotion={
+    refresh(){
+      revealCards();
+      popUpdatedNumbers();
+      markCompletedTasks();
+      animateBoard();
+      animateTests();
+    },
+    animateView
+  };
+
+  if(document.readyState==="loading"){
+    document.addEventListener(
+      "DOMContentLoaded",
+      ()=>window.NowOrNeverMotion.refresh(),
+      {once:true}
+    );
+  }else{
+    window.NowOrNeverMotion.refresh();
   }
 
 })();
