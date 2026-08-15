@@ -1453,6 +1453,28 @@ input:focus,select:focus{
 }
 
 
+
+/* =========================================================
+   MOBILE PERFORMANCE MODE
+   ========================================================= */
+@media (max-width:700px){
+  .view:not(.active){display:none !important;animation:none !important}
+  .view.active{animation:none !important}
+  .ambient-lighting{opacity:.45}
+  .ambient-lighting::after{animation:none !important;transform:none !important}
+  .light-orb{filter:blur(28px);animation:none !important;will-change:auto}
+  .fade-pop,.shop-item,.card{animation:none !important}
+  .view,.card,.shop-grid{min-width:0}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+}
+
 /* =========================================================
    NOW OR NEVER — AMBIENT LIGHTING THEME
    Added without removing or replacing existing app content.
@@ -4213,7 +4235,11 @@ function startRealtime(){
     .channel("shared-tasks-live")
     .on("postgres_changes",
       {event:"*",schema:"public",table:"tasks"},
-      () => renderTasks()
+      () => {
+        const view=getActiveViewId();
+        if(view==="tasks") renderTasks();
+        if(view==="daily") updateCommandCenter();
+      }
     )
     .subscribe();
 
@@ -4222,15 +4248,14 @@ function startRealtime(){
     .on("postgres_changes",
       {event:"UPDATE",schema:"public",table:"profiles"},
       () => {
-        renderBoard();
-        renderTasks();
-        if(currentUser){
-          loadProfile().then(() => {
-            if(document.getElementById("shop")?.classList.contains("active")){
-              renderShop();
-            }
-          });
-        }
+        if(!currentUser) return;
+        loadProfile().then(()=>{
+          const view=getActiveViewId();
+          if(view==="leaderboard") renderBoard();
+          if(view==="personal") renderPersonal();
+          if(view==="shop") renderShop();
+          if(view==="daily") updateCommandCenter();
+        });
       }
     )
     .subscribe();
@@ -4240,10 +4265,13 @@ function startRealtime(){
     .on("postgres_changes",
       {event:"*",schema:"public",table:"test_scores",filter:`student_id=eq.${currentUser.id}`},
       () => {
-        renderTests();
-        renderBoard();
-        loadProfile();
-        renderPersonal();
+        loadProfile().then(()=>{
+          const view=getActiveViewId();
+          if(view==="tests") renderTests();
+          if(view==="leaderboard") renderBoard();
+          if(view==="personal") renderPersonal();
+          if(view==="daily") updateCommandCenter();
+        });
       }
     )
     .subscribe();
@@ -4253,8 +4281,13 @@ function startRealtime(){
     .on("postgres_changes",
       {event:"*",schema:"public",table:"study_logs",filter:`student_id=eq.${currentUser.id}`},
       () => {
-        renderStudyChart();
-        renderPersonal();
+        const view=getActiveViewId();
+        if(view==="daily"){
+          renderStudyChart();
+          updateCommandCenter();
+        }
+        if(view==="personal") renderPersonal();
+        if(view==="history") renderHistory();
       }
     )
     .subscribe();
@@ -4283,9 +4316,13 @@ function startMidnightRefresh(){
       lastDay=now;
       $("date").value=now;
       $("testDate").value=now;
-      renderTasks();
-      renderStudyChart();
-      renderPersonal();
+      const view=getActiveViewId();
+      if(view==="tasks") renderTasks();
+      if(view==="daily"){
+        renderStudyChart();
+        updateCommandCenter();
+      }
+      if(view==="personal") renderPersonal();
       showToast("New day — today's task board is ready.");
     }
   },15000);
@@ -4294,7 +4331,10 @@ function startMidnightRefresh(){
     const nowWeek=dateKeyFromDate(getWeekStart());
     if(nowWeek!==lastWeek){
       lastWeek=nowWeek;
-      renderStudyChart();
+      if(getActiveViewId()==="daily"){
+        renderStudyChart();
+        updateCommandCenter();
+      }
       showToast("New week — study graph reset.");
     }
   },60000);
@@ -5072,24 +5112,37 @@ async function updateCommandCenter(){
   }catch(err){ console.error("COMMAND CENTER:",err); }
 }
 
-async function refreshAll(){
+function getActiveViewId(){
+  return document.querySelector(".nav button.active")?.dataset.view || "daily";
+}
 
-  if(currentUser){
-    await loadProfile();
+async function refreshActiveView(){
+  if(!currentUser) return;
+
+  const view=getActiveViewId();
+
+  if(view==="daily"){
+    await renderStudyChart();
+    await updateCommandCenter();
+  }else if(view==="tasks"){
+    await renderTasks();
+  }else if(view==="tests"){
+    await renderTests();
+  }else if(view==="personal"){
+    await renderPersonal();
+  }else if(view==="shop"){
+    await renderShop();
+  }else if(view==="leaderboard"){
+    await renderBoard();
+  }else if(view==="history"){
+    await renderHistory();
   }
+}
 
-  await renderBoard();
-  await renderHistory();
-  await renderTasks();
-  await renderTests();
-  await renderStudyChart();
-  await renderPersonal();
-  await renderShop();
-  await updateCommandCenter();
-
+async function refreshAll(){
+  await refreshActiveView();
   startRealtime();
   startMidnightRefresh();
-
 }
 
 
