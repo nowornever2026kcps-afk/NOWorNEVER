@@ -4790,13 +4790,11 @@ async function renderBoard(){
 
   try{
     const {data:cosmetics,error:cosmeticError}=await supabaseClient
-      .from("user_cosmetics")
-      .select("user_id,item_id,slot")
-      .eq("slot","title");
+      .rpc("get_public_equipped_titles");
 
     if(cosmeticError){
       console.error("LEADERBOARD TITLES:",cosmeticError);
-      showToast("Titles could not be loaded. Check user_cosmetics SELECT policy.");
+      showToast("Titles could not be loaded. Run the public title RPC SQL.");
     }else{
       titleRows=cosmetics||[];
     }
