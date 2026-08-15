@@ -1962,6 +1962,167 @@ body::after{width:230px;height:230px;right:-90px;top:62%;background:rgba(103,232
   .leader-title-badge{margin-left:4px;padding:2px 6px;font-size:8px}
 }
 
+
+/* =========================================================
+   LEADERBOARD COSMETICS
+   Shows the currently equipped title, text style, accessory
+   and animated effect directly on each leaderboard row.
+   ========================================================= */
+
+.leader{
+  position:relative;
+  overflow:visible;
+}
+
+.leader.has-cosmetics{
+  border-radius:12px;
+  padding-left:9px;
+  padding-right:9px;
+}
+
+.leader-cosmetics{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:5px;
+  min-height:16px;
+}
+
+.leader-cosmetic{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  line-height:1;
+  white-space:nowrap;
+}
+
+.leader-title-badge{
+  display:inline-flex;
+  align-items:center;
+  margin-left:6px;
+  padding:3px 8px;
+  border:1px solid rgba(181,140,255,.45);
+  border-radius:999px;
+  background:rgba(139,92,246,.12);
+  color:#c9adff;
+  font-size:9px;
+  font-weight:850;
+  line-height:1.2;
+  vertical-align:middle;
+  white-space:nowrap;
+}
+
+.leader-accessory{
+  padding:3px 6px;
+  font-size:15px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.08);
+  animation:leaderAccessoryFloat 2.2s ease-in-out infinite;
+}
+
+.leader-effect{
+  font-size:14px;
+  background:transparent;
+  filter:drop-shadow(0 0 8px rgba(181,140,255,.5));
+  animation:leaderEffectPulse 1.35s ease-in-out infinite;
+}
+
+.leader-effect-fire{animation:leaderFire 1s ease-in-out infinite}
+.leader-effect-spark{animation:leaderSpark 1.15s ease-in-out infinite}
+.leader-effect-lightning{animation:leaderLightning .85s ease-in-out infinite}
+
+.leader-title-row{
+  display:inline-flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:3px;
+}
+
+.leader-style-neon{
+  background:linear-gradient(90deg,#c4a6ff,#7de7f4);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  text-shadow:0 0 14px rgba(139,92,246,.22);
+}
+.leader-style-serif{font-family:Georgia,serif;font-style:italic}
+.leader-style-terminal{font-family:ui-monospace,monospace;letter-spacing:.05em}
+.leader-style-wide{letter-spacing:.22em}
+.leader-style-glow{text-shadow:0 0 7px #fff,0 0 16px rgba(139,92,246,.7)}
+.leader-style-royal{font-family:Georgia,serif;font-weight:950;letter-spacing:.05em}
+
+.leader-crown{
+  position:absolute;
+  left:39px;
+  top:-10px;
+  z-index:3;
+  font-size:16px;
+  line-height:1;
+  filter:drop-shadow(0 0 7px rgba(255,210,80,.55));
+  animation:leaderCrownFloat 2s ease-in-out infinite;
+  pointer-events:none;
+}
+
+.leader-avatar-accessory{
+  position:absolute;
+  left:34px;
+  top:30px;
+  z-index:3;
+  font-size:13px;
+  line-height:1;
+  filter:drop-shadow(0 0 6px rgba(255,255,255,.25));
+  pointer-events:none;
+}
+
+.leader-row-effect{
+  position:absolute;
+  right:42px;
+  top:3px;
+  font-size:13px;
+  pointer-events:none;
+  z-index:2;
+}
+
+.leader-row-effect span{
+  display:inline-block;
+}
+
+@keyframes leaderAccessoryFloat{
+  0%,100%{transform:translateY(0) rotate(-2deg)}
+  50%{transform:translateY(-3px) rotate(2deg)}
+}
+@keyframes leaderEffectPulse{
+  0%,100%{transform:scale(.9);opacity:.65}
+  50%{transform:scale(1.18);opacity:1}
+}
+@keyframes leaderFire{
+  0%,100%{transform:translateY(1px) scale(.9) rotate(-4deg);opacity:.75}
+  50%{transform:translateY(-4px) scale(1.2) rotate(4deg);opacity:1}
+}
+@keyframes leaderSpark{
+  0%,100%{transform:scale(.75) rotate(0);opacity:.45}
+  50%{transform:scale(1.35) rotate(18deg);opacity:1}
+}
+@keyframes leaderLightning{
+  0%,100%{transform:scale(.85);opacity:.5}
+  35%{transform:scale(1.3);opacity:1}
+  45%{transform:scale(.95);opacity:.65}
+}
+@keyframes leaderCrownFloat{
+  0%,100%{transform:translateY(0) rotate(-3deg)}
+  50%{transform:translateY(-4px) rotate(3deg)}
+}
+
+@media(max-width:520px){
+  .leader-title-badge{margin-left:4px;padding:2px 6px;font-size:8px}
+  .leader-crown{left:37px;font-size:14px}
+  .leader-avatar-accessory{left:33px;font-size:11px}
+  .leader-row-effect{right:35px;font-size:11px}
+  .leader-cosmetics{gap:3px}
+}
+
 </style>
 </head>
 
@@ -4601,26 +4762,114 @@ async function renderBoard(){
       return;
     }
 
-    // Title lookup is isolated from startup. If RLS blocks it,
-    // the leaderboard still renders normally.
-    const titleByUser=new Map();
+    /*
+      Load ALL currently equipped cosmetics, not only titles.
+
+      Expected user_cosmetics rows:
+        user_id | slot         | item_id
+        ------- | ------------ | ----------------
+        ...     | title        | title_scholar
+        ...     | text_style   | style_glow
+        ...     | accessory    | acc_crown
+        ...     | effect       | acc_flame
+
+      If RLS currently prevents reading other users' rows, this
+      query will fail and the leaderboard will still render.
+      In that case use the SQL policy/RPC supplied with this fix.
+    */
+    const cosmeticsByUser=new Map();
 
     try{
-      const {data:rows,error:titleError}=await supabaseClient
+      const {data:rows,error:cosmeticError}=await supabaseClient
         .from("user_cosmetics")
-        .select("user_id,item_id")
-        .eq("slot","title");
+        .select("user_id,slot,item_id");
 
-      if(titleError){
-        console.warn("Leaderboard title lookup:",titleError);
+      if(cosmeticError){
+        console.warn("Leaderboard cosmetic lookup:",cosmeticError);
       }else{
         (rows||[]).forEach(row=>{
-          const item=SHOP_ITEMS.find(x=>x.id===row.item_id);
-          if(item) titleByUser.set(row.user_id,item.name);
+          if(!cosmeticsByUser.has(row.user_id)){
+            cosmeticsByUser.set(row.user_id,{});
+          }
+          cosmeticsByUser.get(row.user_id)[row.slot]=row.item_id;
         });
       }
     }catch(e){
-      console.warn("Leaderboard title lookup failed:",e);
+      console.warn("Leaderboard cosmetic lookup failed:",e);
+    }
+
+    function cosmeticItem(id){
+      return SHOP_ITEMS.find(x=>x.id===id) || null;
+    }
+
+    function cosmeticBySlot(userId,slot){
+      const id=cosmeticsByUser.get(userId)?.[slot];
+      return cosmeticItem(id);
+    }
+
+    function styleClass(item){
+      if(!item || item.kind!=="textstyle") return "";
+      if(item.id.includes("neon")) return "leader-style-neon";
+      if(item.id.includes("serif")) return "leader-style-serif";
+      if(item.id.includes("terminal")) return "leader-style-terminal";
+      if(item.id.includes("wide")) return "leader-style-wide";
+      if(item.id.includes("glow")) return "leader-style-glow";
+      if(item.id.includes("royal")) return "leader-style-royal";
+      return "";
+    }
+
+    function effectClass(item){
+      if(!item) return "";
+      if(item.id.includes("flame")) return "leader-effect-fire";
+      if(item.id.includes("spark")) return "leader-effect-spark";
+      if(item.id.includes("lightning")) return "leader-effect-lightning";
+      return "";
+    }
+
+    function isCrown(item){
+      if(!item) return false;
+      return item.id==="acc_crown" || item.category==="crown" || /crown/i.test(item.name);
+    }
+
+    function renderLeaderboardCosmetics(student){
+      const title=cosmeticBySlot(student.id,"title");
+      const textStyle=cosmeticBySlot(student.id,"text_style");
+      const accessory=cosmeticBySlot(student.id,"accessory");
+      const effect=cosmeticBySlot(student.id,"effect");
+
+      const visualAccessories=[];
+      if(accessory && !isCrown(accessory)){
+        visualAccessories.push(
+          `<span class="leader-cosmetic leader-accessory" title="${escapeHtml(accessory.name)}">${escapeHtml(accessory.preview)}</span>`
+        );
+      }
+
+      const titleHtml=title
+        ? `<span class="leader-title-badge ${styleClass(textStyle)}">${escapeHtml(title.preview || title.name)}${title.preview && title.preview!==title.name ? ` · ${escapeHtml(title.name)}` : ""}</span>`
+        : "";
+
+      const crownHtml=isCrown(accessory)
+        ? `<span class="leader-crown" title="${escapeHtml(accessory.name)}">${escapeHtml(accessory.preview)}</span>`
+        : "";
+
+      const effectHtml=effect
+        ? `<div class="leader-row-effect" title="${escapeHtml(effect.name)}"><span class="leader-effect ${effectClass(effect)}">${escapeHtml(effect.preview)}</span></div>`
+        : "";
+
+      const accessoryHtml=visualAccessories.length
+        ? `<div class="leader-cosmetics">${visualAccessories.join("")}</div>`
+        : "";
+
+      const hasAny=Boolean(title||textStyle||accessory||effect);
+
+      return {
+        titleHtml,
+        crownHtml,
+        effectHtml,
+        accessoryHtml,
+        hasAny,
+        textStyleClass:styleClass(textStyle)
+      };
     }
 
     const max=Math.max(1,...data.map(x=>Number(x.points)||0));
@@ -4628,28 +4877,41 @@ async function renderBoard(){
     $("boardList").innerHTML=data.map((student,index)=>{
       const points=Number(student.points)||0;
       const hours=Number(student.effective_hours)||0;
-      const title=titleByUser.get(student.id);
+      const cosmetics=renderLeaderboardCosmetics(student);
       const isMe=currentUser && student.id===currentUser.id;
 
       const medal=index===0?"🥇":index===1?"🥈":index===2?"🥉":String(index+1);
       const width=Math.max(0,Math.min(100,(points/max)*100));
 
       return `
-        <div class="leader ${isMe?"me":""}">
+        <div class="leader ${isMe?"me":""} ${cosmetics.hasAny?"has-cosmetics":""}">
+          ${cosmetics.crownHtml}
+          ${cosmetics.effectHtml}
           <div class="rank">${medal}</div>
-          <div class="avatar">${escapeHtml(initials(student.display_name))}</div>
+          <div class="avatar">
+            ${escapeHtml(initials(student.display_name))}
+            ${cosmetics.accessoryHtml ? cosmetics.accessoryHtml : ""}
+          </div>
+
           <div class="leader-main">
-            <div class="leader-name">
-              ${escapeHtml(student.display_name)}
-              ${isMe?" · You":""}
-              ${title?`<span class="leader-title-badge">${escapeHtml(title)}</span>`:""}
+            <div class="leader-name ${cosmetics.textStyleClass}">
+              <span class="leader-title-row">
+                ${escapeHtml(student.display_name)}
+                ${isMe?" · You":""}
+                ${cosmetics.titleHtml}
+              </span>
             </div>
+
             <div class="leader-meta">
               ${hours.toFixed(1)}h
               ${student.username?` · @${escapeHtml(student.username)}`:""}
             </div>
-            <div class="progress"><span style="width:${width}%"></span></div>
+
+            <div class="progress">
+              <span style="width:${width}%"></span>
+            </div>
           </div>
+
           <div class="points">${points.toFixed(0)}</div>
         </div>
       `;
@@ -4664,7 +4926,6 @@ async function renderBoard(){
     $("boardList").innerHTML=`<div class="empty">Could not load leaderboard.</div>`;
   }
 }
-
 
 
 /* ============================================
