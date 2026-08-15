@@ -845,6 +845,141 @@ input::placeholder{
 }
 
 
+const SHOP_ITEMS=[
+ {id:"title_newbie",category:"title",name:"Rookie",desc:"A clean starter title.",price:0,kind:"title",preview:"ROOKIE"},
+ {id:"title_grinder",category:"title",name:"Grinder",desc:"For showing up every day.",price:75,kind:"title",preview:"GRINDER"},
+ {id:"title_locked",category:"title",name:"Locked In",desc:"No distractions.",price:150,kind:"title",preview:"LOCKED IN"},
+ {id:"title_scholar",category:"title",name:"Scholar",desc:"Study-mode identity.",price:250,kind:"title",preview:"SCHOLAR"},
+ {id:"title_machine",category:"title",name:"Study Machine",desc:"A serious flex.",price:400,kind:"title",preview:"STUDY MACHINE"},
+ {id:"title_elite",category:"title",name:"Elite",desc:"Premium leaderboard title.",price:650,kind:"title",preview:"ELITE"},
+ {id:"title_goat",category:"title",name:"GOAT",desc:"Endgame cosmetic title.",price:1000,kind:"title",preview:"GOAT"},
+
+ {id:"acc_stethoscope",category:"cosmetics",name:"Stethoscope",desc:"Classic medical accessory.",price:150,kind:"accessory",preview:"🩺"},
+ {id:"acc_labcoat",category:"outfit",name:"Lab Coat",desc:"Future-doctor look.",price:250,kind:"accessory",preview:"🥼"},
+ {id:"acc_backpack",category:"cosmetics",name:"Study Backpack",desc:"Carry your grind.",price:100,kind:"accessory",preview:"🎒"},
+ {id:"acc_medbag",category:"cosmetics",name:"Medical Bag",desc:"A premium medical bag.",price:350,kind:"accessory",preview:"💼"},
+ {id:"acc_clipboard",category:"cosmetics",name:"Clipboard",desc:"For serious study sessions.",price:75,kind:"accessory",preview:"📋"},
+ {id:"acc_books",category:"cosmetics",name:"Book Stack",desc:"Tiny stack of study books.",price:125,kind:"accessory",preview:"📚"},
+ {id:"acc_pen",category:"cosmetics",name:"Signature Pen",desc:"Minimal study accessory.",price:50,kind:"accessory",preview:"🖊️"},
+ {id:"acc_headphones",category:"cosmetics",name:"Focus Headphones",desc:"Lock-in accessory.",price:175,kind:"accessory",preview:"🎧"},
+ {id:"acc_glasses",category:"cosmetics",name:"Scholar Glasses",desc:"Classic study glasses.",price:100,kind:"accessory",preview:"👓"},
+ {id:"acc_watch",category:"cosmetics",name:"Focus Watch",desc:"Time is the resource.",price:225,kind:"accessory",preview:"⌚"},
+ {id:"acc_medmask",category:"cosmetics",name:"Medical Mask",desc:"Simple medical accessory.",price:150,kind:"accessory",preview:"😷"},
+ {id:"acc_idcard",category:"cosmetics",name:"Student ID",desc:"A small academic badge.",price:80,kind:"accessory",preview:"🪪"},
+ {id:"acc_trophy",category:"cosmetics",name:"Mini Trophy",desc:"For your biggest wins.",price:300,kind:"accessory",preview:"🏆"},
+ {id:"acc_medal",category:"cosmetics",name:"Medal",desc:"Achievement accessory.",price:275,kind:"accessory",preview:"🏅"},
+ {id:"acc_crown",category:"cosmetics",name:"Crown",desc:"Premium achievement flex.",price:600,kind:"accessory",preview:"👑"},
+ {id:"acc_flame",category:"emoji",name:"Study Flame",desc:"Animated focus effect.",price:500,kind:"effect",preview:"🔥"},
+ {id:"acc_spark",category:"emoji",name:"Spark Effect",desc:"Small live sparkle effect.",price:350,kind:"effect",preview:"✨"},
+ {id:"acc_lightning",category:"emoji",name:"Lightning Effect",desc:"High-energy study effect.",price:450,kind:"effect",preview:"⚡"},
+ {id:"acc_brain",category:"badge",name:"Brain Badge",desc:"Study badge.",price:120,kind:"accessory",preview:"🧠"},
+ {id:"acc_rocket",category:"badge",name:"Rocket Badge",desc:"Progress badge.",price:200,kind:"accessory",preview:"🚀"},
+ {id:"acc_star",category:"badge",name:"Star Badge",desc:"Achievement badge.",price:275,kind:"accessory",preview:"⭐"},
+ {id:"acc_studycap",category:"headwear",name:"Study Cap",desc:"Classic student accessory.",price:90,kind:"accessory",preview:"🧢"},
+ {id:"acc_helmet",category:"headwear",name:"Focus Helmet",desc:"For extreme lock-in.",price:300,kind:"accessory",preview:"⛑️"},
+ {id:"acc_sunglasses",category:"cosmetics",name:"Focus Shades",desc:"For the leaderboard.",price:250,kind:"accessory",preview:"😎"},
+ {id:"acc_thermos",category:"cosmetics",name:"Study Thermos",desc:"Desk-session companion.",price:125,kind:"accessory",preview:"🥤"},
+ {id:"acc_laptop",category:"cosmetics",name:"Mini Laptop",desc:"Digital-study accessory.",price:400,kind:"accessory",preview:"💻"},
+ {id:"acc_tablet",category:"cosmetics",name:"Study Tablet",desc:"Premium study accessory.",price:500,kind:"accessory",preview:"📱"},
+ {id:"acc_anatomy",category:"cosmetics",name:"Anatomy Model",desc:"NEET-themed desk accessory.",price:450,kind:"accessory",preview:"🫀"},
+ {id:"acc_microscope",category:"cosmetics",name:"Microscope",desc:"Science-themed accessory.",price:550,kind:"accessory",preview:"🔬"},
+ {id:"acc_firstaid",category:"cosmetics",name:"First Aid Kit",desc:"Medical-themed accessory.",price:200,kind:"accessory",preview:"🩹"},
+ {id:"acc_bandaid",category:"cosmetics",name:"Study Battle Scar",desc:"Tiny grind badge.",price:175,kind:"accessory",preview:"🩹"},
+ {id:"acc_studybell",category:"cosmetics",name:"Study Bell",desc:"Session-complete badge.",price:225,kind:"accessory",preview:"🔔"},
+ {id:"acc_medcross",category:"cosmetics",name:"Medical Cross",desc:"Clean medical emblem.",price:325,kind:"accessory",preview:"✚"},
+ {id:"acc_gene",category:"cosmetics",name:"DNA Badge",desc:"Biology-themed badge.",price:375,kind:"accessory",preview:"🧬"},
+ {id:"acc_molecule",category:"cosmetics",name:"Molecule Badge",desc:"Chemistry-themed badge.",price:375,kind:"accessory",preview:"⚗️"},
+ {id:"acc_atom",category:"cosmetics",name:"Atom Badge",desc:"Physics-themed badge.",price:375,kind:"accessory",preview:"⚛️"},
+ {id:"acc_neet",category:"cosmetics",name:"NEET Grind Badge",desc:"For the long preparation.",price:700,kind:"accessory",preview:"📖"},
+ {id:"acc_1000",category:"cosmetics",name:"1000 Club",desc:"Ultra-premium cosmetic.",price:1000,kind:"accessory",preview:"💎"}
+,
+ {id:"style_neon",category:"textstyle",name:"Neon Edge",desc:"Violet-cyan gradient name.",price:325,kind:"textstyle",preview:"Aa"},
+ {id:"style_serif",category:"textstyle",name:"Scholar Serif",desc:"Classic editorial type.",price:175,kind:"textstyle",preview:"Aa"},
+ {id:"style_terminal",category:"textstyle",name:"Terminal",desc:"Monospace locked-in look.",price:225,kind:"textstyle",preview:"Aa"},
+ {id:"style_wide",category:"textstyle",name:"Wide Track",desc:"Spaced premium lettering.",price:275,kind:"textstyle",preview:"A A"},
+ {id:"style_glow",category:"textstyle",name:"Glow Type",desc:"Soft luminous leaderboard text.",price:450,kind:"textstyle",preview:"Aa"},
+ {id:"style_royal",category:"textstyle",name:"Royal Type",desc:"Bold title-card lettering.",price:600,kind:"textstyle",preview:"Aa"},
+ {id:"crown_silver",category:"crown",name:"Silver Crown",desc:"Clean crown cosmetic.",price:350,kind:"accessory",preview:"♔"},
+ {id:"crown_gold",category:"crown",name:"Gold Crown",desc:"Classic premium flex.",price:600,kind:"accessory",preview:"👑"},
+ {id:"crown_halo",category:"crown",name:"Halo Crown",desc:"Crown with a celestial feel.",price:800,kind:"accessory",preview:"♕"},
+ {id:"emoji_rocket",category:"emoji",name:"Rocket Trail",desc:"Animated 🚀 beside your title.",price:300,kind:"effect",preview:"🚀"},
+ {id:"emoji_fire",category:"emoji",name:"Fire Mode",desc:"Animated 🔥 focus badge.",price:400,kind:"effect",preview:"🔥"},
+ {id:"emoji_brain",category:"emoji",name:"Brain Spark",desc:"Animated 🧠 study badge.",price:275,kind:"effect",preview:"🧠"},
+ {id:"emoji_star",category:"emoji",name:"Star Burst",desc:"Animated ⭐ achievement badge.",price:500,kind:"effect",preview:"⭐"},
+ {id:"emoji_lightning",category:"emoji",name:"Lightning",desc:"Animated ⚡ energy badge.",price:550,kind:"effect",preview:"⚡"}
+];
+
+function shopPreview(i){
+ if(i.kind==="title") return `<div class="shop-title-preview">${i.preview}</div>`;
+ if(i.kind==="textstyle"){
+   const cls=i.id.includes("neon")?"style-neon":i.id.includes("serif")?"style-serif":i.id.includes("terminal")?"style-terminal":i.id.includes("wide")?"style-wide":i.id.includes("glow")?"style-glow":"style-royal";
+   return `<div class="shop-title-preview ${cls}">${i.preview}</div>`;
+ }
+ if(i.kind==="effect") return `<div class="shop-badge-preview live-emoji">${i.preview}</div>`;
+ return `<div class="shop-badge-preview">${i.preview}</div>`;
+}
+function shopSlot(i){
+ if(i.kind==="title")return "title";
+ if(i.kind==="textstyle")return "text_style";
+ if(i.kind==="effect")return "effect";
+ return "accessory";
+}
+function selectShopCategory(c){
+ selectedShopCategory=c;
+ const cats=["all","textstyle","title","crown","emoji","cosmetics"];
+ document.querySelectorAll(".shop-tabs button").forEach((b,n)=>b.classList.toggle("active",cats[n]===c));
+ renderShop();
+}
+async function getShopData(){
+ const {data,error}=await supabaseClient.from("shop_items").select("item_id").eq("user_id",currentUser.id);
+ if(error){console.error(error);return {owned:[],equipped:{}}}
+ const {data:eq}=await supabaseClient.from("user_cosmetics").select("slot,item_id").eq("user_id",currentUser.id);
+ const equipped={};(eq||[]).forEach(x=>equipped[x.slot]=x.item_id);
+ return {owned:(data||[]).map(x=>x.item_id),equipped};
+}
+async function renderShop(){
+ if(!currentUser)return;
+ $("shopBalance").textContent=`${Math.max(0,Number(currentProfile?.points)||0).toFixed(0)} pts`;
+ const {owned,equipped}=await getShopData();
+ const card=i=>{
+   const own=owned.includes(i.id), eq=equipped[shopSlot(i)]===i.id;
+   return `<div class="shop-item fade-pop">
+     <div class="shop-preview">${shopPreview(i)}</div>
+     <div class="shop-name">${i.name}</div>
+     <div class="shop-desc">${i.desc}</div>
+     <div class="shop-price">${own?"Owned":"💠 "+i.price+" pts"}</div>
+     <button class="${own?"owned":""} ${eq?"equipped":""}" onclick="shopAction('${i.id}')" ${eq?"disabled":""}>${eq?"✓ Equipped":own?"Equip":"Buy · "+i.price}</button>
+   </div>`;
+ };
+ const filtered=SHOP_ITEMS.filter(i=>selectedShopCategory==="all" || i.category===selectedShopCategory || (selectedShopCategory==="cosmetics" && ["cosmetics","outfit","badge","headwear"].includes(i.category)));
+ if(selectedShopCategory!=="all"){
+   const label={textstyle:"Aa Text Styles",title:"🏷 Titles",crown:"👑 Crowns",emoji:"✨ Emoji FX",cosmetics:"🎒 Cosmetics"}[selectedShopCategory]||"Shop";
+   $("shopGrid").innerHTML=`<div style="grid-column:1/-1"><div class="shop-section-head"><div class="shop-section-name">${label}</div><div class="shop-section-count">${filtered.length} items</div></div></div>`+filtered.map(card).join("");
+ }else{
+   const order=["textstyle","title","crown","emoji","cosmetics","outfit","badge","headwear"];
+   $("shopGrid").innerHTML=order.map(cat=>{
+     const arr=SHOP_ITEMS.filter(i=>i.category===cat);
+     if(!arr.length)return "";
+     const label={textstyle:"Aa Text Styles",title:"🏷 Titles",crown:"👑 Crowns",emoji:"✨ Emoji FX",cosmetics:"🎒 Cosmetics",outfit:"🧥 Outfits",badge:"🏅 Badges",headwear:"🧢 Headwear"}[cat];
+     return `<div style="grid-column:1/-1"><div class="shop-section-head"><div class="shop-section-name">${label}</div><div class="shop-section-count">${arr.length} items</div></div></div>${arr.map(card).join("")}`;
+   }).join("");
+ }
+ const names=Object.values(equipped).map(id=>SHOP_ITEMS.find(i=>i.id===id)?.name).filter(Boolean);
+ $("equippedShopItems").innerHTML=names.length?names.map(n=>`<span class="equipped-chip">✦ ${escapeHtml(n)}</span>`).join(" "):"Nothing equipped yet.";
+} 
+async function shopAction(id){
+ const i=SHOP_ITEMS.find(x=>x.id===id); if(!i)return;
+ const {data,error}=await supabaseClient.rpc("buy_or_equip_cosmetic",{p_item_id:i.id,p_price:i.price,p_slot:shopSlot(i)});
+ if(error){console.error(error);showToast(error.message);return}
+ await loadProfile(); await renderShop(); await renderBoard();
+ showToast(data?.bought?`${i.name} purchased · -${i.price} points ✓`:`${i.name} equipped ✓`);
+}
+
+
+
+
+
+
 /* ============================================
    PERSONAL STREAK + ACHIEVEMENTS
 ============================================ */
@@ -1715,6 +1850,228 @@ input:focus,select:focus{
   }
 }
 
+/* ===== VISUAL UPGRADE v7 ===== */
+:root{
+  --bg:#07070a; --surface:#101014; --surface2:#15151b; --border:#292933;
+  --text:#f7f7fb; --muted:#8f909d; --soft:#cfd0da; --white:#fff;
+  --violet:#8b5cf6; --violet2:#b58cff; --cyan:#67e8f9; --pink:#f0abfc;
+  --green:#9ee6b4; --red:#f2a6a6; --yellow:#e9d98c;
+  --glow:0 0 34px rgba(139,92,246,.18);
+}
+body{
+  background:
+    radial-gradient(600px 260px at 50% -5%,rgba(139,92,246,.18),transparent 68%),
+    radial-gradient(430px 300px at 100% 38%,rgba(103,232,249,.06),transparent 70%),
+    #07070a;
+  overflow-x:hidden;
+}
+body::before,body::after{content:"";position:fixed;pointer-events:none;z-index:-1;border-radius:50%;filter:blur(55px);opacity:.35}
+body::before{width:210px;height:210px;left:-100px;top:32%;background:rgba(139,92,246,.18);animation:orbFloat 9s ease-in-out infinite}
+body::after{width:180px;height:180px;right:-80px;top:68%;background:rgba(103,232,249,.10);animation:orbFloat 11s ease-in-out infinite reverse}
+@keyframes orbFloat{50%{transform:translate3d(18px,-24px,0) scale(1.08)}}
+.app{max-width:760px;padding:18px 14px 42px}
+.header{position:relative;padding:4px 0 10px}
+.logo{background:linear-gradient(145deg,#191622,#0d0d11);border-color:#393144;box-shadow:0 0 0 1px rgba(139,92,246,.12),0 10px 30px rgba(0,0,0,.3);font-size:19px}
+h1{font-size:20px;letter-spacing:-.65px;background:linear-gradient(90deg,#fff,#c9b7ff 58%,#9debf5);-webkit-background-clip:text;background-clip:text;color:transparent}
+.header-date{letter-spacing:.1px}
+.nav{background:rgba(14,14,18,.78);backdrop-filter:blur(14px);border-color:#2b2a35;box-shadow:0 8px 28px rgba(0,0,0,.24)}
+.nav button{transition:transform .16s ease,background .16s ease,color .16s ease,box-shadow .16s ease}
+.nav button:hover{color:#eee;transform:translateY(-1px)}
+.nav button.active{background:linear-gradient(135deg,#292239,#1d1c24);box-shadow:inset 0 1px rgba(255,255,255,.06),0 5px 18px rgba(139,92,246,.14);color:#fff}
+.card{background:linear-gradient(145deg,rgba(18,18,23,.96),rgba(12,12,16,.96));border-color:#292932;box-shadow:0 12px 32px rgba(0,0,0,.18);position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;inset:-1px;background:linear-gradient(120deg,rgba(139,92,246,.09),transparent 28%,transparent 72%,rgba(103,232,249,.045));pointer-events:none}
+.card>*{position:relative}
+.card-title{letter-spacing:-.2px}
+input,select{background:#0c0c10;border-color:#2b2b34;transition:all .18s ease}
+input:focus,select:focus{border-color:#7356b8;box-shadow:0 0 0 3px rgba(139,92,246,.10),0 0 18px rgba(139,92,246,.08)}
+.primary{border:1px solid #7356b8;background:linear-gradient(135deg,#eeeaff,#cdbdff);box-shadow:0 8px 24px rgba(139,92,246,.18);transition:transform .14s ease,filter .14s ease,box-shadow .14s ease}
+.primary:hover{filter:brightness(1.04);box-shadow:0 10px 30px rgba(139,92,246,.25)}
+.primary:active{transform:scale(.975)}
+.secondary,.photo-btn,.test-type button,.shop-tabs button{transition:transform .14s ease,background .14s ease,border-color .14s ease,box-shadow .14s ease}
+.secondary:hover,.photo-btn:hover,.test-type button:hover,.shop-tabs button:hover{transform:translateY(-1px);border-color:#51486a}
+.stat,.personal-stat,.streak-box{background:linear-gradient(145deg,#111117,#0d0d11);border-color:#2b2b36;box-shadow:inset 0 1px rgba(255,255,255,.03)}
+.progress{background:#24242d}
+.progress span{background:linear-gradient(90deg,#7c4dff,#b794ff,#6ee7f9);box-shadow:0 0 12px rgba(139,92,246,.35)}
+.leader.me{background:linear-gradient(90deg,rgba(139,92,246,.11),rgba(255,255,255,.025));box-shadow:inset 2px 0 #8b5cf6}
+.avatar{box-shadow:0 0 0 1px rgba(139,92,246,.10),0 0 16px rgba(139,92,246,.10)}
+.fade-pop{animation:cardIn .28s cubic-bezier(.2,.8,.2,1) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+
+/* Command-center analytics */
+.command-center{display:grid;grid-template-columns:1.35fr .65fr;gap:10px;margin:0 0 10px}
+.command-hero{min-height:170px;border-radius:18px;border:1px solid #302c3b;background:radial-gradient(circle at 76% 40%,rgba(139,92,246,.25),transparent 32%),linear-gradient(135deg,#111017,#0b0b0f);padding:17px;position:relative;overflow:hidden;box-shadow:0 18px 45px rgba(0,0,0,.26)}
+.command-hero::after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-30px;top:-36px;border:1px solid rgba(181,140,255,.25);box-shadow:0 0 0 18px rgba(139,92,246,.035),0 0 0 38px rgba(139,92,246,.02)}
+.command-kicker{font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:#a68cff;font-weight:850}
+.command-title{font-size:24px;font-weight:900;letter-spacing:-.8px;margin-top:7px;max-width:250px;line-height:1.03}
+.command-sub{font-size:11px;color:#92929e;margin-top:8px;max-width:265px;line-height:1.5}
+.command-pill{display:inline-flex;gap:6px;align-items:center;margin-top:12px;padding:7px 9px;border:1px solid #353143;border-radius:999px;background:#15131d;font-size:10px;color:#d9d3e9}
+.momentum-orb{min-height:170px;border-radius:18px;border:1px solid #302c3b;background:linear-gradient(145deg,#111117,#0b0b0f);display:grid;place-items:center;position:relative;overflow:hidden}
+.orb-ring{width:116px;height:116px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#9b6cff var(--orb,35%),#25222d 0);box-shadow:0 0 30px rgba(139,92,246,.16);position:relative}
+.orb-ring::before{content:"";position:absolute;inset:8px;border-radius:50%;background:#0c0c10;border:1px solid #312d3b}
+.orb-inner{position:relative;text-align:center;z-index:1}.orb-number{font-size:25px;font-weight:900}.orb-label{font-size:8px;color:#888793;text-transform:uppercase;letter-spacing:.12em;margin-top:2px}
+.mini-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:10px 0}
+.mini-metric{padding:11px;border:1px solid #292933;border-radius:13px;background:linear-gradient(145deg,#121218,#0d0d11);position:relative;overflow:hidden}
+.mini-metric::after{content:"";position:absolute;width:45px;height:45px;border-radius:50%;right:-20px;bottom:-20px;background:rgba(139,92,246,.12);filter:blur(2px)}
+.mini-label{font-size:8px;color:#777783;text-transform:uppercase;letter-spacing:.11em}.mini-value{font-size:17px;font-weight:850;margin-top:4px}
+
+/* Shop */
+.shop-balance{background:radial-gradient(circle at 90% 25%,rgba(139,92,246,.18),transparent 30%),linear-gradient(135deg,#111118,#0d0d11);border:1px solid #302d3a;box-shadow:0 14px 36px rgba(0,0,0,.2);border-radius:17px;padding:17px;position:relative;overflow:hidden}
+.shop-balance::after{content:"✦";position:absolute;right:24px;top:22px;color:#bda7ff;font-size:28px;animation:spark 2.2s ease-in-out infinite}
+@keyframes spark{50%{transform:translateY(-4px) rotate(12deg);opacity:.65}}
+.shop-balance-value{font-size:34px;letter-spacing:-1px;background:linear-gradient(90deg,#fff,#c8b5ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.shop-tabs{display:flex;gap:7px;overflow:auto;padding:2px 0 4px;margin:10px 0 12px;scrollbar-width:none}
+.shop-tabs::-webkit-scrollbar{display:none}.shop-tabs button{white-space:nowrap;min-width:max-content;padding:9px 12px;border:1px solid #2e2e37;border-radius:999px;background:#101014;color:#898995;font-size:10px;font-weight:800}.shop-tabs button.active{background:linear-gradient(135deg,#eee9ff,#c8b6ff);color:#111;border-color:#c0affb;box-shadow:0 7px 20px rgba(139,92,246,.18)}
+.shop-feature{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:14px;margin:0 0 12px;border:1px solid #332d45;border-radius:15px;background:radial-gradient(circle at 78% 20%,rgba(139,92,246,.22),transparent 30%),linear-gradient(135deg,#16131e,#0e0e12);overflow:hidden;position:relative}
+.shop-feature::before{content:"LIMITED DROP";position:absolute;right:-28px;top:9px;transform:rotate(18deg);font-size:8px;font-weight:900;letter-spacing:.16em;color:#bca8ff;opacity:.55}
+.shop-feature-title{font-size:15px;font-weight:900}.shop-feature-copy{font-size:10px;color:#8d8c98;line-height:1.4;margin-top:4px}.shop-feature-icon{font-size:42px;filter:drop-shadow(0 0 15px rgba(181,140,255,.28));animation:floatIcon 2.5s ease-in-out infinite}@keyframes floatIcon{50%{transform:translateY(-5px) rotate(3deg)}}
+.shop-section-head{display:flex;align-items:end;justify-content:space-between;margin:14px 2px 8px}.shop-section-name{font-size:12px;font-weight:900}.shop-section-count{font-size:9px;color:#777783}
+.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.shop-item{background:linear-gradient(145deg,#121217,#0d0d11);border:1px solid #292932;border-radius:15px;padding:9px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;position:relative;overflow:hidden}
+.shop-item::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(139,92,246,.07),transparent 42%);pointer-events:none}
+.shop-item:hover{transform:translateY(-3px);border-color:#4b4260;box-shadow:0 14px 28px rgba(0,0,0,.25),0 0 24px rgba(139,92,246,.08)}
+.shop-preview{height:92px;border-radius:11px;background:radial-gradient(circle at 50% 35%,rgba(139,92,246,.12),transparent 46%),#17171c;border:1px solid #272730;display:grid;place-items:center;overflow:hidden}.shop-title-preview{font-size:14px;letter-spacing:.08em;font-weight:950}.shop-badge-preview{font-size:31px;filter:drop-shadow(0 0 10px rgba(181,140,255,.15))}.shop-name{font-size:12px;font-weight:850;margin-top:9px}.shop-desc{font-size:9px;color:#777783;line-height:1.35;min-height:25px;margin-top:3px}.shop-price{font-size:10px;font-weight:800;color:#c8b7ff;margin-top:8px}.shop-item button{width:100%;height:34px;margin-top:8px;border-radius:9px;border:1px solid #37333f;background:linear-gradient(135deg,#f1eff7,#d4ccdf);color:#111;font-size:10px;font-weight:900;transition:transform .12s ease,filter .12s ease}.shop-item button:hover{filter:brightness(1.05)}.shop-item button:active{transform:scale(.96)}.shop-item button.owned{background:#17171c;color:#c5c5ce}.shop-item button.equipped{background:linear-gradient(135deg,#7c5ce6,#b78cff);color:#fff;border-color:#a48ae8}
+
+/* Analytics rings */
+.analytics-rings{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ring-card{padding:11px 8px;border:1px solid #292932;border-radius:14px;background:#101015;text-align:center}.ring{width:72px;height:72px;margin:0 auto 7px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#8b5cf6 var(--p,45%),#25242c 0);position:relative;box-shadow:0 0 22px rgba(139,92,246,.12)}.ring::before{content:"";position:absolute;inset:6px;border-radius:50%;background:#0d0d11;border:1px solid #302d38}.ring b{position:relative;font-size:13px}.ring-card span{font-size:8px;color:#777783;text-transform:uppercase;letter-spacing:.1em}
+.click-burst{position:fixed;pointer-events:none;z-index:9999;width:8px;height:8px;border-radius:50%;background:#c7b5ff;box-shadow:0 0 14px #a98cff;animation:burst .48s ease-out forwards}@keyframes burst{to{transform:scale(6);opacity:0}}
+@media(max-width:520px){.command-center{grid-template-columns:1fr}.momentum-orb{min-height:125px}.command-hero{min-height:155px}.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.analytics-rings{gap:5px}}
+
+
+.style-neon{background:linear-gradient(90deg,#c4a6ff,#7de7f4);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 14px rgba(139,92,246,.22)}
+.style-serif{font-family:Georgia,serif;font-style:italic}.style-terminal{font-family:ui-monospace,monospace;letter-spacing:.05em}.style-wide{letter-spacing:.22em}.style-glow{text-shadow:0 0 7px #fff,0 0 16px rgba(139,92,246,.7)}.style-royal{font-family:Georgia,serif;font-weight:950;letter-spacing:.05em}
+.live-emoji{animation:emojiFloat 1.6s ease-in-out infinite;filter:drop-shadow(0 0 10px rgba(181,140,255,.35))}@keyframes emojiFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(3deg)}}
+.equipped-chip{display:inline-flex;align-items:center;padding:7px 9px;border:1px solid #3b334e;border-radius:999px;background:#15131b;color:#cbbaff;font-size:9px;margin:3px 3px 3px 0}
+
+
+
+/* ============================================
+   NOW OR NEVER — PREMIUM THEME + MOVING LIGHT
+============================================ */
+:root{
+  --bg:#07070a;
+  --surface:#101014;
+  --surface2:#15151c;
+  --border:#292933;
+  --text:#f7f7fb;
+  --muted:#8f909d;
+  --soft:#cfd0da;
+  --violet:#8b5cf6;
+  --violet2:#b58cff;
+  --cyan:#67e8f9;
+  --pink:#f0abfc;
+}
+body{
+  background:#07070a;
+  position:relative;
+  overflow-x:hidden;
+}
+body::before,body::after{
+  content:"";position:fixed;pointer-events:none;z-index:-1;border-radius:50%;filter:blur(60px);opacity:.42;
+}
+body::before{width:260px;height:260px;left:-110px;top:22%;background:rgba(139,92,246,.22);animation:ambientA 11s ease-in-out infinite alternate}
+body::after{width:230px;height:230px;right:-90px;top:62%;background:rgba(103,232,249,.13);animation:ambientB 13s ease-in-out infinite alternate}
+@keyframes ambientA{0%{transform:translate(0,0)}50%{transform:translate(80px,70px) scale(1.15)}100%{transform:translate(20px,150px) scale(.9)}}
+@keyframes ambientB{0%{transform:translate(0,0)}50%{transform:translate(-90px,-70px) scale(1.18)}100%{transform:translate(-20px,-140px) scale(.92)}}
+#mainApp{position:relative}
+#mainApp::before{content:"";position:fixed;top:-30%;left:-20%;width:40%;height:160%;background:linear-gradient(90deg,transparent,rgba(139,92,246,.045),rgba(103,232,249,.07),transparent);filter:blur(18px);transform:rotate(14deg);pointer-events:none;z-index:-1;animation:lightSweep 12s linear infinite}
+@keyframes lightSweep{0%{left:-45%;opacity:0}12%{opacity:1}50%{left:70%;opacity:.9}85%{opacity:.55}100%{left:125%;opacity:0}}
+.card,.command-center,.mini-metric,.shop-item,.shop-feature,.shop-balance,.personal-hero,.ring-card,.streak-box,.stat,.personal-stat{
+  position:relative;overflow:hidden;
+}
+.card::after,.command-center::after,.mini-metric::after,.shop-item::after,.shop-feature::after,.personal-hero::after,.streak-box::after,.stat::after,.personal-stat::after{
+  content:"";position:absolute;top:-40%;left:-70%;width:45%;height:180%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.055),transparent);transform:rotate(18deg);pointer-events:none;animation:cardLight 8s ease-in-out infinite;
+}
+@keyframes cardLight{0%,70%{left:-70%;opacity:0}78%{opacity:1}100%{left:140%;opacity:0}}
+.site-logo,.welcome-logo,.session-splash-logo{object-fit:contain!important;max-width:100%!important;max-height:100%!important}
+.logo{width:38px!important;height:38px!important;max-width:38px!important;max-height:38px!important;overflow:hidden!important}
+.site-logo{width:100%!important;height:100%!important;display:block!important}
+.session-splash-logo{width:82px!important;height:82px!important;max-width:82px!important;max-height:82px!important}
+.welcome-logo{width:76px!important;height:76px!important;max-width:76px!important;max-height:76px!important}
+.nav{grid-template-columns:repeat(7,minmax(0,1fr))}
+.nav button{font-size:10px;transition:background .18s,color .18s,transform .18s,box-shadow .18s}
+.nav button:hover{color:#fff;transform:translateY(-1px)}
+.nav button.active{background:linear-gradient(135deg,rgba(139,92,246,.32),rgba(103,232,249,.10));box-shadow:inset 0 0 20px rgba(139,92,246,.08),0 0 18px rgba(139,92,246,.08)}
+.primary{background:linear-gradient(135deg,#f4f0ff,#cbb9ff)!important;box-shadow:0 10px 28px rgba(139,92,246,.15)}
+.primary:hover{filter:brightness(1.04);box-shadow:0 12px 34px rgba(139,92,246,.24)}
+@media(max-width:620px){.nav{grid-template-columns:repeat(4,minmax(0,1fr))}.nav button{font-size:9px}.command-center{grid-template-columns:1fr}.shop-grid{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){body::before,body::after,#mainApp::before,.card::after,.command-center::after,.mini-metric::after,.shop-item::after,.shop-feature::after,.personal-hero::after,.streak-box::after,.stat::after,.personal-stat::after{animation:none!important}}
+
+/* PURPLE CIRCLE LIGHT — SLOW FLOATING MOTION */
+.ambient-lighting::before{
+  content:"";
+  position:absolute;
+  width:42vw;
+  height:42vw;
+  min-width:220px;
+  min-height:220px;
+  max-width:560px;
+  max-height:560px;
+  left:18%;
+  top:12%;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(157,92,255,.24) 0%, rgba(139,92,246,.14) 32%, rgba(124,58,237,.06) 52%, transparent 72%);
+  filter:blur(34px);
+  pointer-events:none;
+  will-change:transform,opacity;
+  animation:purpleCircleFloat 16s ease-in-out infinite alternate;
+}
+@keyframes purpleCircleFloat{
+  0%{transform:translate3d(-8vw,-3vh,0) scale(.82);opacity:.45}
+  25%{transform:translate3d(5vw,7vh,0) scale(1);opacity:.72}
+  50%{transform:translate3d(18vw,1vh,0) scale(1.12);opacity:.58}
+  75%{transform:translate3d(8vw,15vh,0) scale(.94);opacity:.76}
+  100%{transform:translate3d(-12vw,23vh,0) scale(.82);opacity:.48}
+}
+.light-a{animation:purpleOrbTravel 19s ease-in-out infinite alternate!important}
+@keyframes purpleOrbTravel{
+  0%{transform:translate3d(0,0,0) scale(.78)}
+  20%{transform:translate3d(18vw,10vh,0) scale(1.05)}
+  45%{transform:translate3d(34vw,2vh,0) scale(.92)}
+  70%{transform:translate3d(20vw,28vh,0) scale(1.16)}
+  100%{transform:translate3d(-2vw,42vh,0) scale(.8)}
+}
+@media (prefers-reduced-motion:reduce){
+  .ambient-lighting::before,.light-a{animation:none!important}
+}
+
+/* =========================================================
+   VISIBLE MOVING PURPLE CIRCLE LIGHT
+   ========================================================= */
+.ambient-lighting{
+  z-index:0 !important;
+  opacity:1 !important;
+}
+.ambient-lighting .light-a{
+  left:-12vw !important;
+  top:8vh !important;
+  width:min(42vw,520px) !important;
+  height:min(42vw,520px) !important;
+  min-width:260px !important;
+  min-height:260px !important;
+  max-width:520px !important;
+  max-height:520px !important;
+  filter:blur(28px) !important;
+  background:radial-gradient(circle,rgba(168,85,247,.55) 0%,rgba(139,92,246,.34) 28%,rgba(124,58,237,.16) 50%,transparent 72%) !important;
+  opacity:1 !important;
+  will-change:transform;
+  animation:visiblePurpleCircle 9s ease-in-out infinite alternate !important;
+}
+@keyframes visiblePurpleCircle{
+  0%{transform:translate3d(0,0,0) scale(.72);}
+  20%{transform:translate3d(18vw,5vh,0) scale(.92);}
+  45%{transform:translate3d(42vw,20vh,0) scale(1.08);}
+  70%{transform:translate3d(20vw,48vh,0) scale(.86);}
+  100%{transform:translate3d(-8vw,62vh,0) scale(1.02);}
+}
+@media(max-width:600px){
+  .ambient-lighting .light-a{
+    width:320px !important;height:320px !important;
+    min-width:320px !important;min-height:320px !important;
+    filter:blur(24px) !important;
+    animation-duration:11s !important;
+  }
+}
+
 </style>
 </head>
 
@@ -1874,6 +2231,7 @@ input:focus,select:focus{
     <button data-view="tasks">Tasks</button>
     <button data-view="tests">Tests</button>
     <button data-view="personal">Me</button>
+    <button data-view="shop">Shop</button>
     <button data-view="leaderboard">Board</button>
     <button data-view="history">History</button>
 
@@ -1887,6 +2245,28 @@ input:focus,select:focus{
     ========================== -->
 
     <section class="view active" id="daily">
+
+      <section class="command-center" aria-label="Study command center">
+  <div class="command-hero">
+    <div class="command-kicker">STUDY COMMAND CENTER</div>
+    <div class="command-title">Build momentum.<br><span style="color:#bca8ff">Then protect it.</span></div>
+    <div class="command-sub">Your dashboard turns study hours, tasks and tests into one visible progression loop.</div>
+    <div class="command-pill">⚡ <span id="momentumText">Loading momentum...</span></div>
+  </div>
+  <div class="momentum-orb">
+    <div class="orb-ring" id="momentumOrb" style="--orb:35%">
+      <div class="orb-inner"><div class="orb-number" id="momentumNumber">0h</div><div class="orb-label">this week</div></div>
+    </div>
+  </div>
+</section>
+<div class="mini-metrics">
+  <div class="mini-metric"><div class="mini-label">Today</div><div class="mini-value" id="vizTodayHours">0h</div></div>
+  <div class="mini-metric"><div class="mini-label">Tasks</div><div class="mini-value" id="vizTasks">0%</div></div>
+  <div class="mini-metric"><div class="mini-label">Points</div><div class="mini-value" id="vizPoints">0</div></div>
+</div>
+
+
+      
 
       <div class="card">
         <p class="card-title">👤 Profile</p>
@@ -2125,6 +2505,37 @@ input:focus,select:focus{
 
     </section>
 
+    <section class="view" id="shop">
+      <div class="card">
+        <div class="shop-balance">
+          <div><div class="shop-balance-label">YOUR SPENDABLE POINTS</div><div class="shop-balance-value" id="shopBalance">0 pts</div></div>
+          <div>🛍️</div>
+        </div>
+        <div class="shop-feature">
+          <div><div class="shop-feature-title">👑 Featured: Crown the Grind</div><div class="shop-feature-copy">Unlock titles, text styles and tiny leaderboard flexes. Buy once, equip anytime.</div></div>
+          <div class="shop-feature-icon">👑</div>
+        </div>
+        <div class="shop-tabs">
+          <button class="active" onclick="selectShopCategory('all')">✦ All</button>
+          <button onclick="selectShopCategory('textstyle')">Aa Text</button>
+          <button onclick="selectShopCategory('title')">🏷 Titles</button>
+          <button onclick="selectShopCategory('crown')">👑 Crowns</button>
+          <button onclick="selectShopCategory('emoji')">✨ Emoji FX</button>
+          <button onclick="selectShopCategory('cosmetics')">🎒 Cosmetics</button>
+        </div>
+        <div id="shopGrid" class="shop-grid"><div class="loading">Loading shop...</div></div>
+      </div>
+      <div class="card">
+        <p class="card-title">🎨 Equipped cosmetics</p>
+        <div id="equippedShopItems" class="small-note">Nothing equipped yet.</div>
+      </div>
+      <div class="card">
+        <p class="card-title">ℹ️ How the shop works</p>
+        <div class="personal-note">Points spent here are removed from your leaderboard total. Purchased items are permanently owned by your account. Cosmetics affect only your own leaderboard/profile appearance.</div>
+      </div>
+    </section>
+
+    
     <!-- =========================
          LEADERBOARD
     ========================== -->
@@ -4510,6 +4921,39 @@ async function renderHistory(){
    REFRESH EVERYTHING
 ============================================ */
 
+async function updateCommandCenter(){
+  if(!currentUser) return;
+  try{
+    const start=getWeekStart();
+    const startKey=dateKeyFromDate(start);
+    const {data:logs}=await supabaseClient
+      .from("study_logs")
+      .select("study_date,effective_hours")
+      .eq("student_id",currentUser.id)
+      .gte("study_date",startKey)
+      .lte("study_date",localDate());
+    const hours=(logs||[]).reduce((s,r)=>s+(Number(r.effective_hours)||0),0);
+    const {data:tasks}=await supabaseClient
+      .from("tasks")
+      .select("completed")
+      .eq("student_id",currentUser.id)
+      .eq("task_date",localDate());
+    const total=(tasks||[]).length;
+    const done=(tasks||[]).filter(t=>t.completed).length;
+    const taskPct=total?Math.round(done/total*100):0;
+    const pts=Math.max(0,Number(currentProfile?.points)||0);
+    if($("momentumText")) $("momentumText").textContent=hours>=10?"You're building serious momentum.":hours>0?"Keep the streak moving.":"Your next focused hour starts here.";
+    if($("momentumNumber")) $("momentumNumber").textContent=fmtHours(hours);
+    if($("momentumOrb")) $("momentumOrb").style.setProperty("--orb",`${Math.min(100,Math.round(hours/40*100))}%`);
+    if($("vizTodayHours")){
+      const today=(logs||[]).find(r=>r.study_date===localDate());
+      $("vizTodayHours").textContent=fmtHours(today?.effective_hours||0);
+    }
+    if($("vizTasks")) $("vizTasks").textContent=`${taskPct}%`;
+    if($("vizPoints")) $("vizPoints").textContent=pts.toFixed(0);
+  }catch(err){ console.error("COMMAND CENTER:",err); }
+}
+
 async function refreshAll(){
 
   await renderBoard();
@@ -4518,6 +4962,8 @@ async function refreshAll(){
   await renderTests();
   await renderStudyChart();
   await renderPersonal();
+  await renderShop();
+  await updateCommandCenter();
 
   startRealtime();
   startMidnightRefresh();
@@ -4595,6 +5041,16 @@ document
           ){
 
             await renderPersonal();
+
+          }
+
+
+          if(
+            btn.dataset.view ===
+            "shop"
+          ){
+
+            await renderShop();
 
           }
 
