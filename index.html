@@ -1453,28 +1453,6 @@ input:focus,select:focus{
 }
 
 
-
-/* =========================================================
-   MOBILE PERFORMANCE MODE
-   ========================================================= */
-@media (max-width:700px){
-  .view:not(.active){display:none !important;animation:none !important}
-  .view.active{animation:none !important}
-  .ambient-lighting{opacity:.45}
-  .ambient-lighting::after{animation:none !important;transform:none !important}
-  .light-orb{filter:blur(28px);animation:none !important;will-change:auto}
-  .fade-pop,.shop-item,.card{animation:none !important}
-  .view,.card,.shop-grid{min-width:0}
-}
-@media (prefers-reduced-motion: reduce){
-  *,*::before,*::after{
-    animation-duration:.001ms !important;
-    animation-iteration-count:1 !important;
-    transition-duration:.001ms !important;
-    scroll-behavior:auto !important;
-  }
-}
-
 /* =========================================================
    NOW OR NEVER — AMBIENT LIGHTING THEME
    Added without removing or replacing existing app content.
@@ -1835,6 +1813,99 @@ input:focus,select:focus{border-color:#7356b8;box-shadow:0 0 0 3px rgba(139,92,2
 .equipped-chip{display:inline-flex;align-items:center;padding:7px 9px;border:1px solid #3b334e;border-radius:999px;background:#15131b;color:#cbbaff;font-size:9px;margin:3px 3px 3px 0}
 
 
+
+
+/* =========================================================
+   SHOP PURCHASE + EQUIP EFFECTS
+   ========================================================= */
+.shop-purchase-flash{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  pointer-events:none;
+  display:grid;
+  place-items:center;
+  background:rgba(7,7,10,.34);
+  animation:shopFlashOut .75s ease forwards;
+}
+.shop-purchase-card{
+  min-width:230px;
+  max-width:82vw;
+  padding:18px 22px;
+  border:1px solid rgba(181,140,255,.55);
+  border-radius:18px;
+  background:rgba(16,16,20,.96);
+  box-shadow:0 0 45px rgba(139,92,246,.25);
+  text-align:center;
+  transform:translateY(10px) scale(.9);
+  animation:shopUnlockIn .42s cubic-bezier(.2,.9,.25,1.2) forwards;
+}
+.shop-purchase-icon{
+  font-size:42px;
+  line-height:1;
+  margin-bottom:8px;
+  filter:drop-shadow(0 0 14px rgba(181,140,255,.6));
+}
+.shop-purchase-title{
+  font-weight:900;
+  font-size:18px;
+  letter-spacing:-.3px;
+}
+.shop-purchase-sub{
+  margin-top:4px;
+  color:#aeb0bd;
+  font-size:12px;
+}
+.shop-item.shop-just-bought{
+  animation:shopBought .7s ease;
+}
+.shop-item.shop-just-equipped{
+  animation:shopEquipped .7s ease;
+}
+.shop-equipped-pulse{
+  animation:shopEquippedPulse 1.1s ease;
+}
+@keyframes shopUnlockIn{
+  0%{opacity:0;transform:translateY(18px) scale(.82)}
+  70%{opacity:1;transform:translateY(-3px) scale(1.03)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes shopFlashOut{
+  0%{opacity:0}
+  12%{opacity:1}
+  72%{opacity:1}
+  100%{opacity:0}
+}
+@keyframes shopBought{
+  0%{transform:scale(1);box-shadow:none}
+  35%{transform:scale(1.035);box-shadow:0 0 28px rgba(139,92,246,.28)}
+  100%{transform:scale(1);box-shadow:none}
+}
+@keyframes shopEquipped{
+  0%{transform:scale(1)}
+  35%{transform:scale(1.04) translateY(-2px)}
+  100%{transform:scale(1)}
+}
+@keyframes shopEquippedPulse{
+  0%{box-shadow:0 0 0 rgba(103,232,249,0)}
+  35%{box-shadow:0 0 28px rgba(103,232,249,.35)}
+  100%{box-shadow:0 0 0 rgba(103,232,249,0)}
+}
+@media(max-width:700px){
+  .shop-purchase-card{
+    min-width:210px;
+    padding:16px 18px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .shop-purchase-flash,
+  .shop-purchase-card,
+  .shop-item.shop-just-bought,
+  .shop-item.shop-just-equipped,
+  .shop-equipped-pulse{
+    animation:none !important;
+  }
+}
 
 /* ============================================
    NOW OR NEVER — PREMIUM THEME + MOVING LIGHT
@@ -2839,12 +2910,92 @@ async function renderShop(){
   renderShopCatalogue(owned,equipped);
 }
 
+
+function shopEffectIcon(item){
+  return item?.preview || "✦";
+}
+
+function showShopUnlockEffect(item, mode){
+  const old=document.querySelector(".shop-purchase-flash");
+  if(old) old.remove();
+
+  const wrap=document.createElement("div");
+  wrap.className="shop-purchase-flash";
+  wrap.innerHTML=`
+    <div class="shop-purchase-card">
+      <div class="shop-purchase-icon">${shopEffectIcon(item)}</div>
+      <div class="shop-purchase-title">${mode==="bought"?"UNLOCKED!":"EQUIPPED!"}</div>
+      <div class="shop-purchase-sub">${escapeHtml(item.name)}</div>
+    </div>
+  `;
+
+  document.body.appendChild(wrap);
+  setTimeout(()=>wrap.remove(),800);
+}
+
+function highlightShopItem(itemId, mode){
+  requestAnimationFrame(()=>{
+    const buttons=[...document.querySelectorAll("#shopGrid button")];
+    const button=buttons.find(b=>b.getAttribute("onclick")?.includes(itemId));
+    const card=button?.closest(".shop-item");
+
+    if(card){
+      card.classList.remove("shop-just-bought","shop-just-equipped");
+      void card.offsetWidth;
+      card.classList.add(mode==="bought"?"shop-just-bought":"shop-just-equipped");
+      setTimeout(()=>{
+        card.classList.remove("shop-just-bought","shop-just-equipped");
+      },800);
+    }
+
+    if(mode==="equipped"){
+      const equippedBox=$("equippedShopItems");
+      if(equippedBox){
+        equippedBox.classList.remove("shop-equipped-pulse");
+        void equippedBox.offsetWidth;
+        equippedBox.classList.add("shop-equipped-pulse");
+        setTimeout(()=>equippedBox.classList.remove("shop-equipped-pulse"),1200);
+      }
+    }
+  });
+}
+
 async function shopAction(id){
- const i=SHOP_ITEMS.find(x=>x.id===id); if(!i)return;
- const {data,error}=await supabaseClient.rpc("buy_or_equip_cosmetic",{p_item_id:i.id,p_price:i.price,p_slot:shopSlot(i)});
- if(error){console.error(error);showToast(error.message);return}
- await loadProfile(); await renderShop(); await renderBoard();
- showToast(data?.bought?`${i.name} purchased · -${i.price} points ✓`:`${i.name} equipped ✓`);
+  const i=SHOP_ITEMS.find(x=>x.id===id);
+  if(!i)return;
+
+  const {data,error}=await supabaseClient.rpc(
+    "buy_or_equip_cosmetic",
+    {
+      p_item_id:i.id,
+      p_price:i.price,
+      p_slot:shopSlot(i)
+    }
+  );
+
+  if(error){
+    console.error(error);
+    showToast(error.message);
+    return;
+  }
+
+  const bought=!!data?.bought;
+  const mode=bought?"bought":"equipped";
+
+  // Show the success effect immediately after the server confirms it.
+  showShopUnlockEffect(i,mode);
+
+  await loadProfile();
+  await renderShop();
+  await renderBoard();
+
+  highlightShopItem(i.id,mode);
+
+  showToast(
+    bought
+      ? `${i.name} purchased · -${i.price} points ✓`
+      : `${i.name} equipped ✓`
+  );
 }
 
 
@@ -4235,11 +4386,7 @@ function startRealtime(){
     .channel("shared-tasks-live")
     .on("postgres_changes",
       {event:"*",schema:"public",table:"tasks"},
-      () => {
-        const view=getActiveViewId();
-        if(view==="tasks") renderTasks();
-        if(view==="daily") updateCommandCenter();
-      }
+      () => renderTasks()
     )
     .subscribe();
 
@@ -4248,14 +4395,15 @@ function startRealtime(){
     .on("postgres_changes",
       {event:"UPDATE",schema:"public",table:"profiles"},
       () => {
-        if(!currentUser) return;
-        loadProfile().then(()=>{
-          const view=getActiveViewId();
-          if(view==="leaderboard") renderBoard();
-          if(view==="personal") renderPersonal();
-          if(view==="shop") renderShop();
-          if(view==="daily") updateCommandCenter();
-        });
+        renderBoard();
+        renderTasks();
+        if(currentUser){
+          loadProfile().then(() => {
+            if(document.getElementById("shop")?.classList.contains("active")){
+              renderShop();
+            }
+          });
+        }
       }
     )
     .subscribe();
@@ -4265,13 +4413,10 @@ function startRealtime(){
     .on("postgres_changes",
       {event:"*",schema:"public",table:"test_scores",filter:`student_id=eq.${currentUser.id}`},
       () => {
-        loadProfile().then(()=>{
-          const view=getActiveViewId();
-          if(view==="tests") renderTests();
-          if(view==="leaderboard") renderBoard();
-          if(view==="personal") renderPersonal();
-          if(view==="daily") updateCommandCenter();
-        });
+        renderTests();
+        renderBoard();
+        loadProfile();
+        renderPersonal();
       }
     )
     .subscribe();
@@ -4281,13 +4426,8 @@ function startRealtime(){
     .on("postgres_changes",
       {event:"*",schema:"public",table:"study_logs",filter:`student_id=eq.${currentUser.id}`},
       () => {
-        const view=getActiveViewId();
-        if(view==="daily"){
-          renderStudyChart();
-          updateCommandCenter();
-        }
-        if(view==="personal") renderPersonal();
-        if(view==="history") renderHistory();
+        renderStudyChart();
+        renderPersonal();
       }
     )
     .subscribe();
@@ -4316,13 +4456,9 @@ function startMidnightRefresh(){
       lastDay=now;
       $("date").value=now;
       $("testDate").value=now;
-      const view=getActiveViewId();
-      if(view==="tasks") renderTasks();
-      if(view==="daily"){
-        renderStudyChart();
-        updateCommandCenter();
-      }
-      if(view==="personal") renderPersonal();
+      renderTasks();
+      renderStudyChart();
+      renderPersonal();
       showToast("New day — today's task board is ready.");
     }
   },15000);
@@ -4331,10 +4467,7 @@ function startMidnightRefresh(){
     const nowWeek=dateKeyFromDate(getWeekStart());
     if(nowWeek!==lastWeek){
       lastWeek=nowWeek;
-      if(getActiveViewId()==="daily"){
-        renderStudyChart();
-        updateCommandCenter();
-      }
+      renderStudyChart();
       showToast("New week — study graph reset.");
     }
   },60000);
@@ -4608,207 +4741,126 @@ $("saveBtn").addEventListener(
 async function renderBoard(){
 
   $("boardList").innerHTML =
-    `<div class="loading">
-      Loading leaderboard...
-    </div>`;
+    `<div class="loading">Loading leaderboard...</div>`;
 
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("profiles")
-      .select(
-        "id,username,display_name,points,effective_hours"
-      )
-      .order(
-        "points",
-        {
-          ascending:false
-        }
-      );
-
+  const {data,error}=await supabaseClient
+    .from("profiles")
+    .select("id,username,display_name,points,effective_hours")
+    .order("points",{ascending:false});
 
   if(error){
-
     console.error(error);
-
     $("boardList").innerHTML =
-      `<div class="empty">
-        Could not load leaderboard.
-      </div>`;
-
+      `<div class="empty">Could not load leaderboard.</div>`;
     return;
-
   }
 
-
-  if(!data.length){
-
+  if(!data?.length){
     $("boardList").innerHTML =
-      `<div class="empty">
-        No students yet.
-      </div>`;
-
+      `<div class="empty">No students yet.</div>`;
     return;
-
   }
 
+  /*
+   * The current RLS setup lets a user read their own user_cosmetics.
+   * Therefore we safely load the logged-in user's equipped title here.
+   * We don't need to expose everyone else's cosmetics.
+   */
+  let myTitleItemId=null;
 
-  const max =
-    Math.max(
-      1,
-      ...data.map(
-        student =>
-          Number(student.points) || 0
-      )
-    );
+  if(currentUser){
+    try{
+      const {data:cosmeticData,error:cosmeticError}=await supabaseClient
+        .from("user_cosmetics")
+        .select("item_id")
+        .eq("user_id",currentUser.id)
+        .eq("slot","title")
+        .maybeSingle();
 
-
-  $("boardList").innerHTML =
-    data.map(
-      (student,index) => {
-
-        const points =
-          Number(student.points) || 0;
-
-        const hours =
-          Number(
-            student.effective_hours
-          ) || 0;
-
-
-        const medal =
-          index === 0
-            ? "🥇"
-            : index === 1
-            ? "🥈"
-            : index === 2
-            ? "🥉"
-            : String(index + 1);
-
-
-        const width =
-          Math.max(
-            0,
-            Math.min(
-              100,
-              points / max * 100
-            )
-          );
-
-
-        const isMe =
-          currentUser &&
-          student.id === currentUser.id;
-
-
-        return `
-
-          <div
-            class="
-              leader
-              ${isMe ? "me" : ""}
-            "
-          >
-
-            <div class="rank">
-              ${medal}
-            </div>
-
-
-            <div class="avatar">
-              ${escapeHtml(initials(student.display_name))}
-            </div>
-
-
-            <div class="leader-main">
-
-              <div class="leader-name">
-
-                ${escapeHtml(
-                  student.display_name
-                )}
-
-                ${
-                  isMe
-                    ? " · You"
-                    : ""
-                }
-
-              </div>
-
-
-              <div class="leader-meta">
-
-                ${hours.toFixed(1)}h
-
-                ·
-
-                ${student.username
-                  ? "@" +
-                    escapeHtml(
-                      student.username
-                    )
-                  : ""
-                }
-
-              </div>
-
-
-              <div class="progress">
-
-                <span
-                  style="
-                    width:${width}%
-                  "
-                ></span>
-
-              </div>
-
-            </div>
-
-
-            <div class="points">
-              ${points.toFixed(0)}
-            </div>
-
-          </div>
-
-        `;
-
+      if(cosmeticError){
+        console.warn("LEADERBOARD TITLE LOAD:",cosmeticError);
+      }else{
+        myTitleItemId=cosmeticData?.item_id || null;
       }
-    ).join("");
+    }catch(err){
+      console.warn("LEADERBOARD TITLE LOAD:",err);
+    }
+  }
 
-
-  const totalPoints =
-    data.reduce(
-      (sum,student) =>
-        sum +
-        (Number(student.points) || 0),
-      0
-    );
-
-
-  const totalHours =
-    data.reduce(
-      (sum,student) =>
-        sum +
-        (Number(
-          student.effective_hours
-        ) || 0),
-      0
-    );
-
-
-  await renderGroupStats(
-    data,
-    totalPoints,
-    totalHours
+  const myTitle=SHOP_ITEMS.find(i=>i.id===myTitleItemId);
+  const max=Math.max(
+    1,
+    ...data.map(student=>Number(student.points)||0)
   );
 
+  $("boardList").innerHTML=data.map((student,index)=>{
+    const points=Number(student.points)||0;
+    const hours=Number(student.effective_hours)||0;
+
+    const medal=
+      index===0 ? "🥇" :
+      index===1 ? "🥈" :
+      index===2 ? "🥉" :
+      String(index+1);
+
+    const width=Math.max(
+      0,
+      Math.min(100,points/max*100)
+    );
+
+    const isMe=
+      currentUser &&
+      student.id===currentUser.id;
+
+    const titleHtml=
+      isMe && myTitle
+        ? `<span class="leader-title-badge">${escapeHtml(myTitle.name)}</span>`
+        : "";
+
+    return `
+      <div class="leader ${isMe?"me":""}">
+        <div class="rank">${medal}</div>
+
+        <div class="avatar">
+          ${escapeHtml(initials(student.display_name))}
+        </div>
+
+        <div class="leader-main">
+          <div class="leader-name">
+            ${escapeHtml(student.display_name)}
+            ${isMe ? " · You" : ""}
+            ${titleHtml}
+          </div>
+
+          <div class="leader-meta">
+            ${hours.toFixed(1)}h
+            ·
+            ${student.username
+              ? "@"+escapeHtml(student.username)
+              : ""}
+          </div>
+
+          <div class="progress">
+            <span style="width:${width}%"></span>
+          </div>
+        </div>
+
+        <div class="points">${points.toFixed(0)}</div>
+      </div>
+    `;
+  }).join("");
+
+  const totalPoints=data.reduce(
+    (sum,student)=>sum+(Number(student.points)||0),0
+  );
+
+  const totalHours=data.reduce(
+    (sum,student)=>sum+(Number(student.effective_hours)||0),0
+  );
+
+  await renderGroupStats(data,totalPoints,totalHours);
 }
+
 
 
 /* ============================================
@@ -5112,37 +5164,24 @@ async function updateCommandCenter(){
   }catch(err){ console.error("COMMAND CENTER:",err); }
 }
 
-function getActiveViewId(){
-  return document.querySelector(".nav button.active")?.dataset.view || "daily";
-}
-
-async function refreshActiveView(){
-  if(!currentUser) return;
-
-  const view=getActiveViewId();
-
-  if(view==="daily"){
-    await renderStudyChart();
-    await updateCommandCenter();
-  }else if(view==="tasks"){
-    await renderTasks();
-  }else if(view==="tests"){
-    await renderTests();
-  }else if(view==="personal"){
-    await renderPersonal();
-  }else if(view==="shop"){
-    await renderShop();
-  }else if(view==="leaderboard"){
-    await renderBoard();
-  }else if(view==="history"){
-    await renderHistory();
-  }
-}
-
 async function refreshAll(){
-  await refreshActiveView();
+
+  if(currentUser){
+    await loadProfile();
+  }
+
+  await renderBoard();
+  await renderHistory();
+  await renderTasks();
+  await renderTests();
+  await renderStudyChart();
+  await renderPersonal();
+  await renderShop();
+  await updateCommandCenter();
+
   startRealtime();
   startMidnightRefresh();
+
 }
 
 
