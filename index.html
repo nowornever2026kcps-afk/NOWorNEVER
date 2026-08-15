@@ -939,6 +939,7 @@ async function getShopData(){
 }
 async function renderShop(){
  if(!currentUser)return;
+ await loadProfile();
  $("shopBalance").textContent=`${Math.max(0,Number(currentProfile?.points)||0).toFixed(0)} pts`;
  const {owned,equipped}=await getShopData();
  const card=i=>{
@@ -1925,7 +1926,7 @@ input:focus,select:focus{border-color:#7356b8;box-shadow:0 0 0 3px rgba(139,92,2
 .shop-feature::before{content:"LIMITED DROP";position:absolute;right:-28px;top:9px;transform:rotate(18deg);font-size:8px;font-weight:900;letter-spacing:.16em;color:#bca8ff;opacity:.55}
 .shop-feature-title{font-size:15px;font-weight:900}.shop-feature-copy{font-size:10px;color:#8d8c98;line-height:1.4;margin-top:4px}.shop-feature-icon{font-size:42px;filter:drop-shadow(0 0 15px rgba(181,140,255,.28));animation:floatIcon 2.5s ease-in-out infinite}@keyframes floatIcon{50%{transform:translateY(-5px) rotate(3deg)}}
 .shop-section-head{display:flex;align-items:end;justify-content:space-between;margin:14px 2px 8px}.shop-section-name{font-size:12px;font-weight:900}.shop-section-count{font-size:9px;color:#777783}
-.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.shop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .shop-item{background:linear-gradient(145deg,#121217,#0d0d11);border:1px solid #292932;border-radius:15px;padding:9px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;position:relative;overflow:hidden}
 .shop-item::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(139,92,246,.07),transparent 42%);pointer-events:none}
 .shop-item:hover{transform:translateY(-3px);border-color:#4b4260;box-shadow:0 14px 28px rgba(0,0,0,.25),0 0 24px rgba(139,92,246,.08)}
@@ -4112,7 +4113,7 @@ function startRealtime(){
       () => {
         renderBoard();
         renderTasks();
-        if(currentUser) loadProfile();
+        if(currentUser) loadProfile().then(() => renderShop());
       }
     )
     .subscribe();
