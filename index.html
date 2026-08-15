@@ -1447,6 +1447,282 @@ input:focus,select:focus{
   }
 }
 
+
+
+/* =========================================================
+   NOW OR NEVER — VISUAL THEME + MOVING LIGHTING
+   Inspired by the supplied visual-upgrade direction:
+   deep black, violet/cyan accents, glass surfaces,
+   and slow ambient light movement.
+   ========================================================= */
+:root{
+  --bg:#07070a;
+  --surface:#101014;
+  --surface2:#15151b;
+  --border:#292933;
+  --text:#f7f7fb;
+  --muted:#8f909d;
+  --soft:#cfd0da;
+  --white:#fff;
+  --violet:#8b5cf6;
+  --violet2:#b58cff;
+  --cyan:#67e8f9;
+  --pink:#f0abfc;
+  --green:#9ee6b4;
+  --red:#f2a6a6;
+  --yellow:#e9d98c;
+}
+
+html,body{min-height:100%;}
+body{
+  background:
+    radial-gradient(650px 320px at 50% -8%,rgba(139,92,246,.18),transparent 68%),
+    radial-gradient(520px 360px at 100% 42%,rgba(103,232,249,.07),transparent 70%),
+    radial-gradient(460px 320px at 0% 88%,rgba(240,171,252,.045),transparent 70%),
+    #07070a;
+  overflow-x:hidden;
+}
+
+/* Large, slow-moving ambient lights */
+body::before,
+body::after{
+  content:"";
+  position:fixed;
+  pointer-events:none;
+  z-index:0;
+  border-radius:50%;
+  filter:blur(70px);
+  mix-blend-mode:screen;
+}
+body::before{
+  width:420px;
+  height:420px;
+  left:-190px;
+  top:18%;
+  background:radial-gradient(circle,rgba(139,92,246,.18),rgba(139,92,246,0) 68%);
+  animation:ambientLightA 15s ease-in-out infinite;
+}
+body::after{
+  width:360px;
+  height:360px;
+  right:-160px;
+  top:58%;
+  background:radial-gradient(circle,rgba(103,232,249,.12),rgba(103,232,249,0) 70%);
+  animation:ambientLightB 18s ease-in-out infinite reverse;
+}
+@keyframes ambientLightA{
+  0%,100%{transform:translate3d(0,0,0) scale(.9);opacity:.55}
+  25%{transform:translate3d(18vw,8vh,0) scale(1.08);opacity:.85}
+  55%{transform:translate3d(42vw,-3vh,0) scale(.96);opacity:.65}
+  80%{transform:translate3d(68vw,13vh,0) scale(1.12);opacity:.78}
+}
+@keyframes ambientLightB{
+  0%,100%{transform:translate3d(0,0,0) scale(.9);opacity:.45}
+  30%{transform:translate3d(-20vw,-8vh,0) scale(1.12);opacity:.7}
+  65%{transform:translate3d(-48vw,4vh,0) scale(.96);opacity:.52}
+}
+
+.app{position:relative;z-index:1;max-width:760px;padding:18px 14px 42px;}
+.auth-screen{z-index:1;}
+
+/* Premium glass header */
+.header{
+  position:relative;
+  padding:6px 10px 12px;
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(18,18,24,.76),rgba(10,10,14,.52));
+  border:1px solid rgba(139,92,246,.12);
+  box-shadow:0 16px 44px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.035);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+
+.logo{
+  background:linear-gradient(145deg,#191622,#0d0d11);
+  border-color:#393144;
+  box-shadow:0 0 0 1px rgba(139,92,246,.12),0 10px 30px rgba(0,0,0,.3);
+}
+
+h1{
+  font-size:20px;
+  letter-spacing:-.65px;
+  background:linear-gradient(90deg,#fff,#c9b7ff 58%,#9debf5);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+/* Glass navigation */
+.nav{
+  position:relative;
+  z-index:2;
+  background:rgba(14,14,18,.72);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-color:#2b2a35;
+  box-shadow:0 8px 28px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.025);
+}
+.nav button.active{
+  background:linear-gradient(135deg,#292239,#1d1c24);
+  box-shadow:inset 0 1px rgba(255,255,255,.06),0 5px 18px rgba(139,92,246,.14);
+  color:#fff;
+}
+
+/* Richer cards with a moving light sweep */
+.card{
+  background:linear-gradient(145deg,rgba(18,18,23,.94),rgba(12,12,16,.94));
+  border-color:#292932;
+  box-shadow:0 12px 32px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.025);
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+}
+.card::before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  background:linear-gradient(120deg,rgba(139,92,246,.085),transparent 28%,transparent 70%,rgba(103,232,249,.045));
+  pointer-events:none;
+  z-index:-1;
+}
+.card::after{
+  content:"";
+  position:absolute;
+  top:-40%;
+  left:-70%;
+  width:42%;
+  height:180%;
+  transform:rotate(18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.055),rgba(167,139,250,.07),transparent);
+  filter:blur(5px);
+  pointer-events:none;
+  animation:cardLightSweep 9s ease-in-out infinite;
+  z-index:0;
+}
+.card > *{position:relative;z-index:1;}
+@keyframes cardLightSweep{
+  0%,65%{left:-70%;opacity:0}
+  72%{opacity:.8}
+  88%,100%{left:135%;opacity:0}
+}
+
+input,select{
+  background:#0c0c10;
+  border-color:#2b2b34;
+}
+input:focus,select:focus{
+  border-color:#7356b8;
+  box-shadow:0 0 0 3px rgba(139,92,246,.10),0 0 18px rgba(139,92,246,.08);
+}
+
+.primary{
+  border-color:#7356b8;
+  background:linear-gradient(135deg,#eeeaff,#cdbdff);
+  box-shadow:0 8px 24px rgba(139,92,246,.18);
+}
+.primary:hover{box-shadow:0 10px 30px rgba(139,92,246,.28);}
+
+.progress span{
+  background:linear-gradient(90deg,#7c4dff,#b794ff,#6ee7f9);
+  box-shadow:0 0 12px rgba(139,92,246,.35);
+}
+
+/* Animated command-center lighting */
+.command-center,
+.personal-hero,
+.mini-metric,
+.stat,
+.personal-stat,
+.streak-box{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  background:linear-gradient(145deg,rgba(17,17,23,.94),rgba(10,10,14,.92));
+  border-color:#2b2b36;
+}
+.command-center::after,
+.personal-hero::after,
+.mini-metric::after,
+.stat::after,
+.personal-stat::after,
+.streak-box::after{
+  content:"";
+  position:absolute;
+  width:170px;
+  height:170px;
+  border-radius:50%;
+  right:-90px;
+  top:-95px;
+  background:radial-gradient(circle,rgba(139,92,246,.14),transparent 68%);
+  filter:blur(8px);
+  animation:smallLightDrift 8s ease-in-out infinite;
+  pointer-events:none;
+  z-index:0;
+}
+@keyframes smallLightDrift{
+  0%,100%{transform:translate3d(0,0,0);opacity:.45}
+  50%{transform:translate3d(-70px,70px,0);opacity:.9}
+}
+
+/* Welcome page gets the same theme */
+.auth-screen{
+  background:
+    radial-gradient(600px 340px at 50% 18%,rgba(139,92,246,.16),transparent 68%),
+    radial-gradient(460px 320px at 15% 75%,rgba(103,232,249,.07),transparent 70%),
+    radial-gradient(420px 300px at 88% 78%,rgba(240,171,252,.05),transparent 70%),
+    #07070a;
+}
+.auth-box{
+  background:linear-gradient(145deg,rgba(15,15,20,.76),rgba(9,9,13,.62));
+  border-color:rgba(139,92,246,.16);
+  box-shadow:0 24px 70px rgba(0,0,0,.38),0 0 60px rgba(139,92,246,.06),inset 0 1px rgba(255,255,255,.035);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.auth-screen::before{
+  border-color:rgba(139,92,246,.12);
+  box-shadow:0 0 50px rgba(139,92,246,.08);
+}
+.auth-screen::after{
+  border-color:rgba(103,232,249,.10);
+  box-shadow:0 0 50px rgba(103,232,249,.06);
+}
+
+/* A slow moving light line across the whole interface */
+#mainApp::after{
+  content:"";
+  position:fixed;
+  top:-25vh;
+  left:-30vw;
+  width:24vw;
+  min-width:180px;
+  height:150vh;
+  transform:rotate(16deg);
+  background:linear-gradient(90deg,transparent,rgba(139,92,246,.035),rgba(103,232,249,.045),transparent);
+  filter:blur(18px);
+  pointer-events:none;
+  z-index:0;
+  animation:globalLightSweep 16s ease-in-out infinite;
+}
+@keyframes globalLightSweep{
+  0%,12%{left:-35vw;opacity:0}
+  20%{opacity:.7}
+  48%{left:55vw;opacity:.55}
+  68%{left:125vw;opacity:0}
+  100%{left:125vw;opacity:0}
+}
+
+@media(prefers-reduced-motion:reduce){
+  body::before,body::after,
+  .card::after,
+  .command-center::after,
+  .personal-hero::after,
+  .mini-metric::after,
+  .stat::after,
+  .personal-stat::after,
+  .streak-box::after,
+  #mainApp::after{animation:none!important}
+}
 </style>
 </head>
 
