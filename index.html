@@ -925,7 +925,6 @@ function shopSlot(i){
  return "accessory";
 }
 let selectedShopCategory = "all";
-
 function selectShopCategory(c){
  selectedShopCategory=c;
  const cats=["all","textstyle","title","crown","emoji","cosmetics"];
@@ -941,12 +940,8 @@ async function getShopData(){
 }
 async function renderShop(){
  if(!currentUser)return;
-
- // Use the already-loaded profile so Shop shows the same points
- // as the header/profile immediately. Realtime profile updates
- // refresh currentProfile before calling renderShop().
- const shopPoints = Math.max(0, Number(currentProfile?.points) || 0);
- $("shopBalance").textContent=`${shopPoints.toFixed(0)} pts`;
+ await loadProfile();
+ $("shopBalance").textContent=`${Math.max(0,Number(currentProfile?.points)||0).toFixed(0)} pts`;
  const {owned,equipped}=await getShopData();
  const card=i=>{
    const own=owned.includes(i.id), eq=equipped[shopSlot(i)]===i.id;
@@ -4119,7 +4114,7 @@ function startRealtime(){
       () => {
         renderBoard();
         renderTasks();
-        if(currentUser) loadProfile().then(() => renderShop());
+        if(currentUser) loadProfile();
       }
     )
     .subscribe();
