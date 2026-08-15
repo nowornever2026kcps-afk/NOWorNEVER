@@ -34,6 +34,79 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
+/* ============================================
+   SESSION STARTUP / APP SPLASH
+============================================ */
+body.starting #authScreen,
+body.starting #mainApp{
+  visibility:hidden!important;
+}
+
+.session-splash{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255,255,255,.075), transparent 30%),
+    var(--bg);
+  opacity:1;
+  visibility:visible;
+  transition:opacity .28s ease, visibility .28s ease;
+}
+.session-splash.hide{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+.session-splash-inner{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+  transform:translateY(6px);
+  animation:splashRise .38s var(--ease-spring) both;
+}
+.session-splash-logo{
+  width:82px;
+  height:82px;
+  padding:7px;
+  object-fit:contain;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.12);
+  background:#111;
+  box-shadow:0 16px 55px rgba(0,0,0,.45), 0 0 40px rgba(255,255,255,.05);
+  animation:splashLogo .42s var(--ease-spring) both;
+}
+.session-splash-name{
+  margin:0;
+  font-size:23px;
+  font-weight:900;
+  letter-spacing:-.6px;
+  animation:splashName .28s .08s ease both;
+}
+.session-splash-tag{
+  margin:0;
+  color:var(--muted);
+  font-size:11px;
+  animation:splashName .28s .13s ease both;
+}
+@keyframes splashRise{
+  from{opacity:0;transform:translateY(12px) scale(.98)}
+  to{opacity:1;transform:none}
+}
+@keyframes splashLogo{
+  0%{opacity:0;transform:scale(.58) rotate(-5deg)}
+  75%{opacity:1;transform:scale(1.06) rotate(1deg)}
+  100%{opacity:1;transform:scale(1) rotate(0)}
+}
+@keyframes splashName{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:none}
+}
+
+
 button,input,select{font:inherit}
 button{cursor:pointer}
 
@@ -57,22 +130,16 @@ button{cursor:pointer}
 }
 
 .logo{
-  width:58px;
-  height:58px;
+  width:38px;
+  height:38px;
   border:1px solid var(--border);
-  border-radius:12px;
+  border-radius:11px;
   display:grid;
   place-items:center;
   background:#111;
-  overflow:hidden;
+  font-size:18px
 }
-.site-logo{
-  width:58px;
-  height:58px;
-  object-fit:contain;
-  border-radius:12px;
-  display:block;
-}
+
 h1{
   font-size:19px;
   letter-spacing:-.3px;
@@ -883,6 +950,135 @@ input::placeholder{
   to{opacity:1;transform:none}
 }
 
+/* =========================================================
+   WELCOME / LOGIN EXPERIENCE
+   ========================================================= */
+.auth-screen{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255,255,255,.045), transparent 30%),
+    radial-gradient(circle at 15% 80%, rgba(110,170,255,.045), transparent 28%),
+    radial-gradient(circle at 85% 20%, rgba(190,120,255,.04), transparent 26%);
+}
+.auth-screen::before,
+.auth-screen::after{
+  content:"";
+  position:absolute;
+  width:220px;
+  height:220px;
+  border:1px solid rgba(255,255,255,.045);
+  border-radius:50%;
+  z-index:-1;
+  pointer-events:none;
+}
+.auth-screen::before{
+  top:8%;
+  left:8%;
+  animation:welcomeFloat 7s ease-in-out infinite;
+}
+.auth-screen::after{
+  right:8%;
+  bottom:8%;
+  width:170px;
+  height:170px;
+  animation:welcomeFloat 9s ease-in-out infinite reverse;
+}
+@keyframes welcomeFloat{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(0,-16px,0) scale(1.04)}
+}
+.auth-box{
+  position:relative;
+}
+.auth-box::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:18px;
+  width:180px;
+  height:100px;
+  transform:translateX(-50%);
+  background:radial-gradient(circle, rgba(255,255,255,.075), transparent 68%);
+  filter:blur(12px);
+  z-index:-1;
+  animation:welcomeGlow 3.5s ease-in-out infinite;
+}
+@keyframes welcomeGlow{
+  0%,100%{opacity:.45;transform:translateX(-50%) scale(.92)}
+  50%{opacity:.9;transform:translateX(-50%) scale(1.12)}
+}
+.welcome-logo-wrap{
+  width:76px;
+  height:76px;
+  margin:0 auto;
+  padding:7px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:22px;
+  background:rgba(18,18,18,.88);
+  box-shadow:0 14px 45px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.025);
+  animation:welcomeLogoIn .75s var(--ease-spring) both, welcomeLogoFloat 4s .8s ease-in-out infinite;
+}
+.welcome-logo{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+  border-radius:15px;
+}
+@keyframes welcomeLogoIn{
+  0%{opacity:0;transform:translateY(-18px) scale(.72) rotate(-7deg)}
+  70%{opacity:1;transform:translateY(2px) scale(1.04) rotate(1deg)}
+  100%{opacity:1;transform:translateY(0) scale(1) rotate(0)}
+}
+@keyframes welcomeLogoFloat{
+  0%,100%{transform:translateY(0) rotate(0)}
+  50%{transform:translateY(-5px) rotate(1deg)}
+}
+.auth-title{
+  animation:welcomeTitleIn .6s .18s var(--ease-out) both;
+  letter-spacing:-.02em;
+}
+.auth-subtitle{
+  animation:welcomeSubtitleIn .55s .3s var(--ease-out) both;
+}
+@keyframes welcomeTitleIn{
+  from{opacity:0;transform:translateY(10px);filter:blur(5px)}
+  to{opacity:1;transform:none;filter:none}
+}
+@keyframes welcomeSubtitleIn{
+  from{opacity:0;transform:translateY(7px)}
+  to{opacity:1;transform:none}
+}
+#loginBox,
+#signupBox{
+  animation:welcomeFormIn .55s .4s var(--ease-out) both;
+}
+@keyframes welcomeFormIn{
+  from{opacity:0;transform:translateY(12px) scale(.985)}
+  to{opacity:1;transform:none}
+}
+.auth-box .field{
+  animation:fieldIn .45s var(--ease-out) both;
+}
+.auth-box .field:nth-of-type(1){animation-delay:.48s}
+.auth-box .field:nth-of-type(2){animation-delay:.55s}
+.auth-box .primary{
+  animation:buttonIn .5s .62s var(--ease-spring) both;
+}
+@keyframes fieldIn{
+  from{opacity:0;transform:translateX(-5px)}
+  to{opacity:1;transform:none}
+}
+@keyframes buttonIn{
+  from{opacity:0;transform:translateY(7px) scale(.96)}
+  to{opacity:1;transform:none}
+}
+.auth-switch{
+  animation:welcomeSubtitleIn .5s .7s var(--ease-out) both;
+}
+
 /* Better tab transitions */
 .view{
   animation:viewIn .3s var(--ease-out) both;
@@ -1215,6 +1411,14 @@ input:focus,select:focus{
 
 /* Respect reduced-motion accessibility */
 @media (prefers-reduced-motion:reduce){
+  .session-splash-inner,
+  .session-splash-logo,
+  .auth-screen::before,
+  .auth-screen::after,
+  .welcome-logo-wrap,
+  .auth-box::before{animation:none!important}
+  .welcome-logo-wrap,.auth-title,.auth-subtitle,#loginBox,#signupBox,.auth-box .field,.auth-box .primary,.auth-switch{animation:none!important}
+
   *,
   *::before,
   *::after{
@@ -1228,7 +1432,16 @@ input:focus,select:focus{
 </style>
 </head>
 
-<body>
+<body class="starting">
+
+<!-- Fast startup animation for returning/logged-in users -->
+<div class="session-splash" id="sessionSplash" aria-hidden="true">
+  <div class="session-splash-inner">
+    <img src="logo.png" alt="Now or Never" class="session-splash-logo">
+    <h2 class="session-splash-name">Now or Never</h2>
+    <p class="session-splash-tag">Focus. Compete. Rise.</p>
+  </div>
+</div>
 
 <!-- =========================
      LOGIN / SIGNUP SCREEN
@@ -1238,12 +1451,17 @@ input:focus,select:focus{
 
   <div class="auth-box">
 
-    <div class="auth-logo"><img
-    src="logo.png"
-    alt="Now or Never logo"
-    class="site-logo"></div>
+    <div class="auth-logo">
+      <div class="welcome-logo-wrap">
+        <img
+          src="logo.png"
+          alt="Now or Never logo"
+          class="welcome-logo"
+        >
+      </div>
+    </div>
 
-    <h1 class="auth-title">Study Accountability</h1>
+    <h1 class="auth-title">Now or Never</h1>
 
     <p class="auth-subtitle">
       Study hard · Compete · Rise
@@ -1329,15 +1547,17 @@ input:focus,select:focus{
 
     <div class="brand">
 
-      <div class="logo"><img
-    src="logo.png"
-    alt="Now or Never logo"
-    class="site-logo"
-></div>
+      <div class="logo">
+        <img
+          src="logo.png"
+          alt="Now or Never logo"
+          class="site-logo"
+        >
+      </div>
 
       <div>
 
-        <h1>Study Accountability</h1>
+        <h1>Now or Never</h1>
 
         <div class="header-date" id="todayText"></div>
 
@@ -1805,7 +2025,14 @@ const SUPABASE_KEY =
 const supabaseClient =
   window.supabase.createClient(
     SUPABASE_URL,
-    SUPABASE_KEY
+    SUPABASE_KEY,
+    {
+      auth:{
+        persistSession:true,
+        autoRefreshToken:true,
+        detectSessionInUrl:true
+      }
+    }
   );
 
 
@@ -2131,34 +2358,124 @@ $("logoutBtn").addEventListener(
 
 
 /* ============================================
-   AUTH STATE
+   AUTH STATE + STARTUP SESSION RESTORE
 ============================================ */
 
-supabaseClient.auth.onAuthStateChange(
-  async (event, session) => {
+let authReady = false;
+let sessionTransition = 0;
 
-    if(session && session.user){
+function hideSessionSplash(){
+  const splash = $("sessionSplash");
+  if(!splash) return;
 
-      currentUser = session.user;
+  splash.classList.add("hide");
 
-      await loadProfile();
-
-      showMainApp();
-
-      await refreshAll();
-
-    }else{
-
-      currentUser = null;
-
-      currentProfile = null;
-
-      showAuthScreen();
-
+  setTimeout(() => {
+    if(!document.body.classList.contains("starting")){
+      splash.style.display = "none";
     }
+  }, 320);
+}
+
+function showSessionSplash(){
+  const splash = $("sessionSplash");
+  if(!splash) return;
+
+  splash.style.display = "grid";
+  splash.classList.remove("hide");
+}
+
+async function applyAuthSession(session, isStartup=false){
+
+  const transition = ++sessionTransition;
+
+  if(session && session.user){
+
+    if(isStartup || !authReady){
+      showSessionSplash();
+    }
+
+    currentUser = session.user;
+
+    await loadProfile();
+
+    if(transition !== sessionTransition) return;
+
+    showMainApp();
+
+    if(isStartup || !authReady){
+      await new Promise(resolve => setTimeout(resolve, 520));
+    }
+
+    if(transition !== sessionTransition) return;
+
+    document.body.classList.remove("starting");
+    authReady = true;
+    hideSessionSplash();
+
+    await refreshAll();
+
+  }else{
+
+    currentUser = null;
+    currentProfile = null;
+
+    document.body.classList.remove("starting");
+    authReady = true;
+    hideSessionSplash();
+    showAuthScreen();
+
+  }
+}
+
+supabaseClient.auth.onAuthStateChange(
+  (event, session) => {
+
+    applyAuthSession(
+      session,
+      event === "INITIAL_SESSION"
+    );
 
   }
 );
+
+(async function bootSavedSession(){
+  try{
+    const {data,error} =
+      await supabaseClient.auth.getSession();
+
+    if(error){
+      console.error("SESSION RESTORE:",error);
+      if(!authReady){
+        document.body.classList.remove("starting");
+        authReady = true;
+        hideSessionSplash();
+        showAuthScreen();
+      }
+      return;
+    }
+
+    if(!authReady){
+      await applyAuthSession(
+        data?.session || null,
+        true
+      );
+    }
+
+  }catch(error){
+
+    console.error("SESSION BOOT:",error);
+
+    if(!authReady){
+      document.body.classList.remove("starting");
+      authReady = true;
+      hideSessionSplash();
+      showAuthScreen();
+    }
+
+  }
+})();
+
 
 
 /* ============================================
@@ -4069,37 +4386,9 @@ $("todayText").textContent =
     }
   );
 
-
-(async function(){
-
-  const {
-    data
-  } =
-    await supabaseClient.auth.getSession();
-
-
-  if(
-    data &&
-    data.session &&
-    data.session.user
-  ){
-
-    currentUser =
-      data.session.user;
-
-    await loadProfile();
-
-    showMainApp();
-
-    await refreshAll();
-
-  }else{
-
-    showAuthScreen();
-
-  }
-
-})();
+// Authentication startup is intentionally deferred until the
+// auth listener below is registered. This prevents the login page
+// from flashing before Supabase restores a saved session.
 
 
 
