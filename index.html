@@ -1448,285 +1448,284 @@ input:focus,select:focus{
 }
 
 
-
 /* =========================================================
-   NOW OR NEVER — VISUAL THEME + MOVING LIGHTING
-   Inspired by the supplied visual-upgrade direction:
-   deep black, violet/cyan accents, glass surfaces,
-   and slow ambient light movement.
+   NOW OR NEVER — AMBIENT LIGHTING THEME
+   Added without removing or replacing existing app content.
    ========================================================= */
 :root{
-  --bg:#07070a;
-  --surface:#101014;
-  --surface2:#15151b;
-  --border:#292933;
-  --text:#f7f7fb;
-  --muted:#8f909d;
-  --soft:#cfd0da;
-  --white:#fff;
-  --violet:#8b5cf6;
-  --violet2:#b58cff;
-  --cyan:#67e8f9;
-  --pink:#f0abfc;
-  --green:#9ee6b4;
-  --red:#f2a6a6;
-  --yellow:#e9d98c;
+  --accent-violet:#9b7cff;
+  --accent-cyan:#53d9ff;
+  --accent-blue:#6b8cff;
+  --glow-violet:rgba(155,124,255,.22);
+  --glow-cyan:rgba(83,217,255,.16);
 }
 
-html,body{min-height:100%;}
 body{
-  background:
-    radial-gradient(650px 320px at 50% -8%,rgba(139,92,246,.18),transparent 68%),
-    radial-gradient(520px 360px at 100% 42%,rgba(103,232,249,.07),transparent 70%),
-    radial-gradient(460px 320px at 0% 88%,rgba(240,171,252,.045),transparent 70%),
-    #07070a;
+  position:relative;
+  min-height:100vh;
   overflow-x:hidden;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(155,124,255,.075), transparent 34%),
+    radial-gradient(circle at 100% 70%, rgba(83,217,255,.045), transparent 30%),
+    #07070a;
 }
 
-/* Large, slow-moving ambient lights */
-body::before,
-body::after{
-  content:"";
+/* Moving ambient light layer */
+.ambient-lighting{
   position:fixed;
-  pointer-events:none;
+  inset:0;
   z-index:0;
+  pointer-events:none;
+  overflow:hidden;
+  opacity:.95;
+}
+.ambient-lighting::after{
+  content:"";
+  position:absolute;
+  inset:-30%;
+  background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.018) 47%,rgba(155,124,255,.045) 50%,rgba(83,217,255,.025) 53%,transparent 65%);
+  transform:translateX(-55%) rotate(8deg);
+  animation:ambientBeam 13s ease-in-out infinite;
+}
+.light-orb{
+  position:absolute;
+  display:block;
+  width:34vw;
+  height:34vw;
+  max-width:430px;
+  max-height:430px;
+  min-width:180px;
+  min-height:180px;
   border-radius:50%;
-  filter:blur(70px);
-  mix-blend-mode:screen;
+  filter:blur(55px);
+  will-change:transform;
 }
-body::before{
-  width:420px;
-  height:420px;
-  left:-190px;
-  top:18%;
-  background:radial-gradient(circle,rgba(139,92,246,.18),rgba(139,92,246,0) 68%);
-  animation:ambientLightA 15s ease-in-out infinite;
+.light-a{
+  left:-10vw;
+  top:8vh;
+  background:radial-gradient(circle,rgba(155,124,255,.20),transparent 68%);
+  animation:lightDriftA 15s ease-in-out infinite alternate;
 }
-body::after{
-  width:360px;
-  height:360px;
-  right:-160px;
-  top:58%;
-  background:radial-gradient(circle,rgba(103,232,249,.12),rgba(103,232,249,0) 70%);
-  animation:ambientLightB 18s ease-in-out infinite reverse;
+.light-b{
+  right:-8vw;
+  top:32vh;
+  background:radial-gradient(circle,rgba(83,217,255,.14),transparent 68%);
+  animation:lightDriftB 18s ease-in-out infinite alternate;
 }
-@keyframes ambientLightA{
-  0%,100%{transform:translate3d(0,0,0) scale(.9);opacity:.55}
-  25%{transform:translate3d(18vw,8vh,0) scale(1.08);opacity:.85}
-  55%{transform:translate3d(42vw,-3vh,0) scale(.96);opacity:.65}
-  80%{transform:translate3d(68vw,13vh,0) scale(1.12);opacity:.78}
-}
-@keyframes ambientLightB{
-  0%,100%{transform:translate3d(0,0,0) scale(.9);opacity:.45}
-  30%{transform:translate3d(-20vw,-8vh,0) scale(1.12);opacity:.7}
-  65%{transform:translate3d(-48vw,4vh,0) scale(.96);opacity:.52}
+.light-c{
+  left:34vw;
+  bottom:-22vh;
+  background:radial-gradient(circle,rgba(107,140,255,.11),transparent 68%);
+  animation:lightDriftC 21s ease-in-out infinite alternate;
 }
 
-.app{position:relative;z-index:1;max-width:760px;padding:18px 14px 42px;}
-.auth-screen{z-index:1;}
-
-/* Premium glass header */
-.header{
-  position:relative;
-  padding:6px 10px 12px;
-  border-radius:18px;
-  background:linear-gradient(135deg,rgba(18,18,24,.76),rgba(10,10,14,.52));
-  border:1px solid rgba(139,92,246,.12);
-  box-shadow:0 16px 44px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.035);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
+@keyframes lightDriftA{
+  0%{transform:translate3d(0,0,0) scale(.9)}
+  50%{transform:translate3d(20vw,8vh,0) scale(1.12)}
+  100%{transform:translate3d(7vw,27vh,0) scale(.96)}
+}
+@keyframes lightDriftB{
+  0%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(-18vw,-10vh,0) scale(.82)}
+  100%{transform:translate3d(-5vw,18vh,0) scale(1.1)}
+}
+@keyframes lightDriftC{
+  0%{transform:translate3d(-5vw,8vh,0) scale(.8)}
+  50%{transform:translate3d(10vw,-13vh,0) scale(1.18)}
+  100%{transform:translate3d(-18vw,-4vh,0) scale(.92)}
+}
+@keyframes ambientBeam{
+  0%{transform:translateX(-65%) rotate(8deg);opacity:.35}
+  45%{opacity:.8}
+  100%{transform:translateX(65%) rotate(8deg);opacity:.35}
 }
 
-.logo{
-  background:linear-gradient(145deg,#191622,#0d0d11);
-  border-color:#393144;
-  box-shadow:0 0 0 1px rgba(139,92,246,.12),0 10px 30px rgba(0,0,0,.3);
+/* Keep all actual UI above the lighting */
+.auth-screen,.app{position:relative;z-index:1}
+
+/* Premium glass surfaces */
+.header,
+.nav,
+.card,
+.task-person,
+.streak-box,
+.stat-box,
+.personal-stat,
+.metric,
+.test-score-preview,
+.test-type button,
+.stat,
+.leader.me{
+  background:linear-gradient(145deg,rgba(20,20,28,.90),rgba(12,12,17,.82));
+  border-color:rgba(255,255,255,.075);
+  box-shadow:0 14px 45px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.025);
 }
 
-h1{
-  font-size:20px;
-  letter-spacing:-.65px;
-  background:linear-gradient(90deg,#fff,#c9b7ff 58%,#9debf5);
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
-}
-
-/* Glass navigation */
-.nav{
-  position:relative;
-  z-index:2;
-  background:rgba(14,14,18,.72);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
-  border-color:#2b2a35;
-  box-shadow:0 8px 28px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.025);
-}
-.nav button.active{
-  background:linear-gradient(135deg,#292239,#1d1c24);
-  box-shadow:inset 0 1px rgba(255,255,255,.06),0 5px 18px rgba(139,92,246,.14);
-  color:#fff;
-}
-
-/* Richer cards with a moving light sweep */
-.card{
-  background:linear-gradient(145deg,rgba(18,18,23,.94),rgba(12,12,16,.94));
-  border-color:#292932;
-  box-shadow:0 12px 32px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.025);
+.card,
+.task-person,
+.streak-box,
+.stat-box,
+.personal-stat,
+.metric{
   position:relative;
   overflow:hidden;
-  isolation:isolate;
-}
-.card::before{
-  content:"";
-  position:absolute;
-  inset:-1px;
-  background:linear-gradient(120deg,rgba(139,92,246,.085),transparent 28%,transparent 70%,rgba(103,232,249,.045));
-  pointer-events:none;
-  z-index:-1;
-}
-.card::after{
-  content:"";
-  position:absolute;
-  top:-40%;
-  left:-70%;
-  width:42%;
-  height:180%;
-  transform:rotate(18deg);
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.055),rgba(167,139,250,.07),transparent);
-  filter:blur(5px);
-  pointer-events:none;
-  animation:cardLightSweep 9s ease-in-out infinite;
-  z-index:0;
-}
-.card > *{position:relative;z-index:1;}
-@keyframes cardLightSweep{
-  0%,65%{left:-70%;opacity:0}
-  72%{opacity:.8}
-  88%,100%{left:135%;opacity:0}
 }
 
-input,select{
-  background:#0c0c10;
-  border-color:#2b2b34;
+/* Soft light sweep on cards */
+.card::after,
+.task-person::after,
+.metric::after,
+.streak-box::after,
+.stat-box::after,
+.personal-stat::after{
+  content:"";
+  position:absolute;
+  top:-120%;
+  left:-70%;
+  width:45%;
+  height:340%;
+  background:linear-gradient(90deg,transparent,rgba(155,124,255,.055),rgba(83,217,255,.035),transparent);
+  transform:rotate(18deg);
+  pointer-events:none;
+  animation:cardLightSweep 11s ease-in-out infinite;
+}
+@keyframes cardLightSweep{
+  0%,55%{left:-75%;opacity:0}
+  64%{opacity:1}
+  78%,100%{left:135%;opacity:0}
+}
+
+/* Animated navigation glow */
+.nav button.active{
+  position:relative;
+  background:linear-gradient(135deg,rgba(155,124,255,.18),rgba(83,217,255,.08));
+  color:#fff;
+  box-shadow:0 0 22px rgba(155,124,255,.09);
+}
+.nav button.active::after{
+  content:"";
+  position:absolute;
+  left:22%;right:22%;bottom:3px;height:2px;
+  border-radius:4px;
+  background:linear-gradient(90deg,var(--accent-violet),var(--accent-cyan));
+  box-shadow:0 0 10px rgba(155,124,255,.45);
+  animation:navGlow 2.4s ease-in-out infinite;
+}
+@keyframes navGlow{0%,100%{opacity:.45;transform:scaleX(.75)}50%{opacity:1;transform:scaleX(1)}}
+
+/* Buttons and focus lighting */
+.primary{
+  border-color:rgba(155,124,255,.28);
+  background:linear-gradient(135deg,#f5f4ff,#d9f8ff);
+  box-shadow:0 8px 28px rgba(155,124,255,.10);
+}
+.primary:hover,.secondary:hover,.photo-btn:hover,.task-add button:hover{
+  box-shadow:0 0 24px rgba(155,124,255,.12);
 }
 input:focus,select:focus{
-  border-color:#7356b8;
-  box-shadow:0 0 0 3px rgba(139,92,246,.10),0 0 18px rgba(139,92,246,.08);
+  border-color:rgba(155,124,255,.60);
+  box-shadow:0 0 0 3px rgba(155,124,255,.07),0 0 20px rgba(83,217,255,.045);
 }
 
-.primary{
-  border-color:#7356b8;
-  background:linear-gradient(135deg,#eeeaff,#cdbdff);
-  box-shadow:0 8px 24px rgba(139,92,246,.18);
+/* Progress / chart lighting */
+.progress span,.task-progress span,.chart-bar{
+  background:linear-gradient(90deg,var(--accent-violet),var(--accent-cyan));
+  box-shadow:0 0 12px rgba(155,124,255,.20);
 }
-.primary:hover{box-shadow:0 10px 30px rgba(139,92,246,.28);}
+.chart-day.today .chart-bar{background:linear-gradient(90deg,#c8baff,#8ce9ff)}
 
-.progress span{
-  background:linear-gradient(90deg,#7c4dff,#b794ff,#6ee7f9);
-  box-shadow:0 0 12px rgba(139,92,246,.35);
-}
-
-/* Animated command-center lighting */
-.command-center,
-.personal-hero,
-.mini-metric,
-.stat,
-.personal-stat,
-.streak-box{
-  position:relative;
-  overflow:hidden;
-  isolation:isolate;
-  background:linear-gradient(145deg,rgba(17,17,23,.94),rgba(10,10,14,.92));
-  border-color:#2b2b36;
-}
-.command-center::after,
-.personal-hero::after,
-.mini-metric::after,
-.stat::after,
-.personal-stat::after,
-.streak-box::after{
-  content:"";
-  position:absolute;
-  width:170px;
-  height:170px;
-  border-radius:50%;
-  right:-90px;
-  top:-95px;
-  background:radial-gradient(circle,rgba(139,92,246,.14),transparent 68%);
-  filter:blur(8px);
-  animation:smallLightDrift 8s ease-in-out infinite;
-  pointer-events:none;
-  z-index:0;
-}
-@keyframes smallLightDrift{
-  0%,100%{transform:translate3d(0,0,0);opacity:.45}
-  50%{transform:translate3d(-70px,70px,0);opacity:.9}
+/* Points / important numbers */
+.points,.metric-value,.stat .value,.personal-stat b,.score{
+  text-shadow:0 0 18px rgba(155,124,255,.12);
 }
 
-/* Welcome page gets the same theme */
+/* Logo lighting — keeps the logo physically constrained */
+.logo img,.site-logo,.welcome-logo,.session-splash-logo{
+  object-fit:contain!important;
+}
+.logo{
+  box-shadow:0 0 0 1px rgba(155,124,255,.08),0 0 22px rgba(155,124,255,.08);
+}
+.session-splash-logo,.welcome-logo{
+  filter:drop-shadow(0 0 18px rgba(155,124,255,.22));
+}
+
+/* Welcome screen uses the same lighting language */
 .auth-screen{
   background:
-    radial-gradient(600px 340px at 50% 18%,rgba(139,92,246,.16),transparent 68%),
-    radial-gradient(460px 320px at 15% 75%,rgba(103,232,249,.07),transparent 70%),
-    radial-gradient(420px 300px at 88% 78%,rgba(240,171,252,.05),transparent 70%),
+    radial-gradient(circle at 50% 30%,rgba(155,124,255,.10),transparent 28%),
+    radial-gradient(circle at 10% 80%,rgba(83,217,255,.07),transparent 25%),
     #07070a;
 }
 .auth-box{
-  background:linear-gradient(145deg,rgba(15,15,20,.76),rgba(9,9,13,.62));
-  border-color:rgba(139,92,246,.16);
-  box-shadow:0 24px 70px rgba(0,0,0,.38),0 0 60px rgba(139,92,246,.06),inset 0 1px rgba(255,255,255,.035);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
+  position:relative;
 }
-.auth-screen::before{
-  border-color:rgba(139,92,246,.12);
-  box-shadow:0 0 50px rgba(139,92,246,.08);
-}
-.auth-screen::after{
-  border-color:rgba(103,232,249,.10);
-  box-shadow:0 0 50px rgba(103,232,249,.06);
-}
-
-/* A slow moving light line across the whole interface */
-#mainApp::after{
+.auth-box::before{
   content:"";
-  position:fixed;
-  top:-25vh;
-  left:-30vw;
-  width:24vw;
-  min-width:180px;
-  height:150vh;
-  transform:rotate(16deg);
-  background:linear-gradient(90deg,transparent,rgba(139,92,246,.035),rgba(103,232,249,.045),transparent);
-  filter:blur(18px);
+  position:absolute;
+  width:260px;height:260px;
+  left:50%;top:8%;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(155,124,255,.11),transparent 68%);
+  filter:blur(25px);
   pointer-events:none;
-  z-index:0;
-  animation:globalLightSweep 16s ease-in-out infinite;
+  animation:welcomeGlow 5s ease-in-out infinite;
 }
-@keyframes globalLightSweep{
-  0%,12%{left:-35vw;opacity:0}
-  20%{opacity:.7}
-  48%{left:55vw;opacity:.55}
-  68%{left:125vw;opacity:0}
-  100%{left:125vw;opacity:0}
+@keyframes welcomeGlow{0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(.9)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}}
+
+/* Startup splash lighting */
+.session-splash{
+  background:
+    radial-gradient(circle at 50% 42%,rgba(155,124,255,.13),transparent 28%),
+    radial-gradient(circle at 30% 70%,rgba(83,217,255,.055),transparent 25%),
+    #07070a;
+}
+.session-splash::before{
+  content:"";
+  position:absolute;
+  width:280px;height:280px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(155,124,255,.16),transparent 68%);
+  filter:blur(30px);
+  animation:splashAmbient 3.2s ease-in-out infinite;
+}
+@keyframes splashAmbient{0%,100%{transform:scale(.78);opacity:.55}50%{transform:scale(1.18);opacity:1}}
+.session-splash-inner{position:relative;z-index:1}
+
+/* Mobile: reduce the size/intensity of ambient lighting */
+@media(max-width:600px){
+  .light-orb{filter:blur(42px);opacity:.72}
+  .card::after,.task-person::after,.metric::after,.streak-box::after,.stat-box::after,.personal-stat::after{animation-duration:14s}
 }
 
 @media(prefers-reduced-motion:reduce){
-  body::before,body::after,
+  .ambient-lighting *,
+  .ambient-lighting::after,
   .card::after,
-  .command-center::after,
-  .personal-hero::after,
-  .mini-metric::after,
-  .stat::after,
-  .personal-stat::after,
+  .task-person::after,
+  .metric::after,
   .streak-box::after,
-  #mainApp::after{animation:none!important}
+  .stat-box::after,
+  .personal-stat::after,
+  .nav button.active::after,
+  .auth-box::before,
+  .session-splash::before{
+    animation:none!important;
+  }
 }
+
 </style>
 </head>
 
 <body class="starting">
+
+<!-- Animated ambient lighting layer -->
+<div class="ambient-lighting" aria-hidden="true">
+  <span class="light-orb light-a"></span>
+  <span class="light-orb light-b"></span>
+  <span class="light-orb light-c"></span>
+</div>
 
 <!-- Fast startup animation for returning/logged-in users -->
 <div class="session-splash" id="sessionSplash" aria-hidden="true">
